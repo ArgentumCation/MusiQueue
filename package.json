@@ -35,5 +35,9 @@
         "error"
       ]
     }
+  },
+  "dependencies": {
+    "htmllint": "^0.8.0",
+    "lint": "^0.7.0"
   }
 }

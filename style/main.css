@@ -2,6 +2,9 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  --accent-color: #9C27B0;
+  --text-color: #ddd;
+  --background-color: #111;
 }
 
 html {
@@ -9,61 +12,82 @@ html {
 }
 
 body {
-  background-color: gray;
+  background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   align-items: stretch;
   min-height: 100%;
-  font-family: "Roboto", "Helvetica",sans-serif;
+  font-family: "Roboto", "Helvetica", sans-serif;
+  color: var(--text-color)
 }
 
 header {
   flex-shrink: 0;
-
 }
 
-
+/*Cards*/
 .card {
+  color: black;
   display: grid;
-  grid-template-columns: 1fr 4fr 1fr 1fr;
+  grid-template-columns: auto 4fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  grid-template-areas: "Art Title Title Length" "Art Artist Artist Artist";
+  grid-template-areas: "Art Title Title Length""Art Artist Artist Artist";
   background-color: #eee;
   border-radius: 5px;
   height: 4em;
-
-
-  box-shadow: 2px 3px 3px 0px #00000070;
+  margin-bottom: 1em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  var(--text-color)-space: nowrap;
+  box-shadow: 2px 3px 3px 2px #eeeeee70;
 }
 
 .song-art {
-   grid-area: Art;
-   height: 100%;
+  grid-area: Art;
+  height: 4em;
+  width: 4em;
+}
 
- }
-.song-art img{
+.song-art img {
   height: 100%;
   padding: .5em;
 }
 
-
-.song-title { grid-area: Title; }
-
-.song-length {
-   grid-area: Length;
-padding: 1em; }
-
-.song-artist { grid-area: Artist; }
-/*menu items*/
-
-
-nav {
-  background: red;
-  box-shadow: 0px 4px 3px #0000006b;
-  border-radius: 0 0  5px 5px;
+.song-title {
+  padding-left: 0.5em;
+  grid-area: Title;
+  font-weight: bold;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  var(--text-color)-space: nowrap;
 }
 
+.song-length {
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: right;
+  padding-right: 1em;
+  grid-area: Length;
+}
 
+.song-artist {
+  padding-left: 0.5em;
+  grid-area: Artist;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  var(--text-color)-space: nowrap;
+}
+
+/*menu items*/
+nav {
+  background: var(--accent-color);
+  box-shadow: 0px 4px 3px #eeeeee6b;
+  border-radius: 0 0 5px 5px;
+}
 
 nav ul {
   list-style-type: none;
@@ -78,25 +102,20 @@ nav .item {
   height: 3em;
   font-size: 1.25em;
   font-weight: bold;
-
 }
 
-
 .menu li {
-
   padding: 1em;
 }
 
 .menu a {
-  color: white;
+  color: var(--text-color);
   text-decoration: none;
 }
+
 .menu .item:hover {
   backdrop-filter: brightness(75%);
 }
-
-
-
 
 .menu {
   display: flex;
@@ -113,17 +132,89 @@ nav .item {
 
 /*main*/
 main {
-  padding:1em;
+  padding: 1em;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard {
+  flex: 0 1 auto;
+}
+
+.dashboard h2 {
+  text-align: center;
+  font-size: 12vw;
+  flex: 1 0 auto;
+  box-shadow: -4px 3px 8px #d6d6d685;
+  margin: auto;
+  max-width: 40vmax;
+  background-color: #757575;
+}
+
+.dashbord-text {
+  padding: 1em 0 1em 0;
+  font-weight: bold;
+  font-size: 1.25em;
+}
+
+.dashboard .search {
+  display: flex;
+  height: 2em;
+  margin: 1em;
+}
+
+.search input {
+  width: 100%;
+  border: none;
+  border-radius: 0 15px 15px 0;
+}
+
+.search button {
+  width: 2em;
+  border: 0;
+  border-radius: 15px 0 0 15px;
+}
+
+.dashboard .media-controls {
+  width: 100%;
+  text-align: center;
+  flex: 1 0 auto;
+  border-radius: 5px;
+  padding: 0.5em;
+}
+
+.media-controls {
+  background: #757575;
+
+}
+
+.media-controls button {
+  display: inline-block;
+  padding: 1em;
+  border-radius: 5em;
+  border: none;
+  margin: auto;
+  background-color: #757575;
+  color: var(--text-color);
+}
+
+.card-container {
+  flex: 1 1 auto;
+}
+
+.queue-header {
+  padding: 0.5em 0 0.5em 0;
+  font-size: 1.5em;
 }
 
 /*/footer*/
 footer {
-  background-color: green;
+  background-color: var(--accent-color);
   padding: 0.4em;
   flex-shrink: 0;
   border-radius: 5px 5px 0 0;
-  box-shadow: 0px -2px 3px #0000006b;
+  box-shadow: 0px -2px 3px #eeeeee6b;
 }
 
 /* desktop*/
@@ -132,21 +223,34 @@ footer {
     justify-content: center;
   }
 
-  nav {
-     background-color: blue;
-  }
-
   .logo {
     flex: 1;
   }
+.dashboard h2{
+  max-width: 45vw;
+}
+
+.dashboard {
+  max-width: 50%;
+}
 
   nav .item {
     width: auto;
     order: 1;
-      display: block;
-      backdrop-filter: none;
+    display: block;
+    backdrop-filter: none;
   }
+
   .toggle {
     display: none;
+  }
+
+  main {
+    flex-direction: row;
+  }
+
+  .dashboard {
+    flex: 1 1 auto;
+    margin: auto;
   }
 }

@@ -140,6 +140,7 @@ main {
 
 .dashboard {
   flex: 0 1 auto;
+  padding: 1em;
 }
 
 .dashboard h2 {

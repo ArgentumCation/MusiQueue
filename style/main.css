@@ -17,17 +17,43 @@ body {
   font-family: "Roboto", "Helvetica",sans-serif;
 }
 
-
-
-
-
-
-
 header {
   flex-shrink: 0;
 
 }
 
+
+.card {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas: "Art Title Title Length" "Art Artist Artist Artist";
+  background-color: #eee;
+  border-radius: 5px;
+  height: 4em;
+
+
+  box-shadow: 2px 3px 3px 0px #00000070;
+}
+
+.song-art {
+   grid-area: Art;
+   height: 100%;
+
+ }
+.song-art img{
+  height: 100%;
+  padding: .5em;
+}
+
+
+.song-title { grid-area: Title; }
+
+.song-length {
+   grid-area: Length;
+padding: 1em; }
+
+.song-artist { grid-area: Artist; }
 /*menu items*/
 
 

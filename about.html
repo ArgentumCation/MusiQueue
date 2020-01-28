@@ -12,37 +12,36 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 
-<header>
-    <nav>
-        <ul class="menu">
-            <li class="logo"><a href="#">
-                    <h1>Queuer<h1>
-                </a></li>
-            <li class="item"><a href="index.html">Home</a></li>
-            <li class="item"><a href="about.html">About</a></li>
-            <li class="item"><a href="https://github.com/info340b-wi20/project-ajayk111">GitHub</a></li>
-            <li class="toggle"><a href="#"><i class="fas fa-bars"></i></a></li>
-
-            <script>
-                $(function () {
-                    $(".toggle").on("click", function () {
-                        $(".item").each(function (i) {
-                            if (this.style.display === "block") {
-                                this.style.display = "none";
-                            } else {
-                                this.style.display = "block";
-                            }
-                        })
-                    })
-                });
-            </script>
-        </ul>
-    </nav>
-</header>
-
-
-
 <body>
+
+    <header>
+        <nav>
+            <ul class="menu">
+                <li class="logo"><a href="#">
+                        <h1>Queuer</h1>
+                    </a></li>
+                <li class="item"><a href="index.html">Home</a></li>
+                <li class="item"><a href="about.html">About</a></li>
+                <li class="item"><a href="https://github.com/info340b-wi20/project-ajayk111">GitHub</a></li>
+                <li class="toggle"><a href="#"><i class="fas fa-bars"></i></a></li>
+    
+                <script>
+                    $(function () {
+                        $(".toggle").on("click", function () {
+                            $(".item").each(function (i) {
+                                if (this.style.display === "block") {
+                                    this.style.display = "none";
+                                } else {
+                                    this.style.display = "block";
+                                }
+                            })
+                        })
+                    });
+                </script>
+            </ul>
+        </nav>
+    </header>
+    
     <main class="about">
         <h1>Topic Proposal</h1>
         <h2>by Daniel Lin</h2>
@@ -56,10 +55,10 @@
             <p>
                 For example, at a party, a host may be playing a <a
                     href="https://support.spotify.com/us/using_spotify/playlists/create-a-playlist/"
-                    target="_blank">playlist</a> of tracks,
+                   >playlist</a> of tracks,
                 but their guests want to queue songs that are not on the playlist.
                 In this case, the host would need to manually <a
-                    href="https://support.spotify.com/us/using_spotify/features/play-queue/" target="_blank">queue</a>
+                    href="https://support.spotify.com/us/using_spotify/features/play-queue/">queue</a>
                 music on their phone.
                 The broader issue is that there is no way for a host to gauge the overall sentiment of their
                 listeners.
@@ -115,6 +114,8 @@
         </section>
     </main>
     <footer>
-        &copy 2020 Ajay Kristipati, Daniel Lin, Sailesh Sivakumar
+        Copyright 2020 Ajay Kristipati, Daniel Lin, Sailesh Sivakumar
     </footer>
 </body>
+
+</html>

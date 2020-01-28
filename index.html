@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="./style/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.css">
@@ -20,7 +22,7 @@
                     </a></li>
                 <li class="item"><a href="#">Home</a></li>
                 <li class="item"><a href="./about.html">About</a></li>
-                <li class="item"><a href="#">GitHub</a></li>
+                <li class="item"><a href="https://github.com/info340b-wi20/project-ajayk111">GitHub</a></li>
                 <li class="toggle"><a href="#"><i class="fas fa-bars"></i></a></li>
 
                 <script>
@@ -43,10 +45,12 @@
         <div class="dashboard">
             <div class="dashbord-text">Room Code:</div>
             <h2>VFWR</h2>
-            <div class="search">
-                <button><i class="fas fa-search"></i></button>
-                <input></input>
-            </div>
+            <form action="song-search">
+                <div class="search">
+                    <button><i class="fas fa-search"></i></button>
+                    <label for="search"></label><input type="text" placeholder="Search for a song" name="search"></input>
+                </div>
+            </form>
             <div class="media-controls">
                 <button><i class="fas fa-step-backward"></i></button>
                 <button><i class="fas fa-play"></i></button>
@@ -66,7 +70,7 @@
 
             <div class="card">
                 <div class="song-art">
-                    <img alt="album cover for All-Star" src="img/tnk.jpg">
+                    <img alt="album cover for Grand Escape" src="img/tnk.jpg">
                 </div>
                 <p class="song-title">Grand Escape (ft. Toko Miura)</p>
                 <p class="song-artist">RADWIMPS, Toko Miura </p>
@@ -75,7 +79,7 @@
 
             <div class="card">
                 <div class="song-art">
-                    <img src="img/rere.jpg">
+                    <img alt="album cover for Re:Re" src="img/rere.jpg">
                 </div>
                 <p class="song-title">Re:Re</p>
                 <p class="song-artist">Asian Kung-Fu Generation</p>

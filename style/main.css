@@ -25,6 +25,12 @@ header {
   flex-shrink: 0;
 }
 
+.search-results {
+   margin-top: 1em;
+   overflow: auto;
+   height: 8em;
+}
+
 /*Cards*/
 .card {
   color: black;
@@ -46,6 +52,7 @@ header {
   grid-area: Art;
   height: 4em;
   width: 4em;
+  margin-right: .5em;
 }
 
 .song-art img {
@@ -61,7 +68,7 @@ header {
   margin-bottom: auto;
   text-overflow: ellipsis;
   overflow: hidden;
-  var(--text-color)-space: nowrap;
+  white-space: nowrap;
 }
 
 .song-length {
@@ -204,6 +211,7 @@ main.about {
   width: 100%;
   border: none;
   border-radius: 0 15px 15px 0;
+  padding-left: 0.5em;
 }
 
 .search button {
@@ -255,6 +263,14 @@ footer {
 
 /* desktop*/
 @media screen and (min-width:468px) {
+  .search-results {
+    height: 45vh;
+    -ms-overflow-style: none;
+  }
+
+  .search-results::-webkit-scrollbar {
+    display: none;
+  }
   .menu {
     justify-content: center;
   }

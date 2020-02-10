@@ -47,9 +47,9 @@
         <div class="dashboard">
             <div class="dashbord-text">Room Code:</div>
             <h2>VFWR</h2>
-            <form action="song-search">
+            <form>
                 <div class="search">
-                    <button aria-label="search"><i class="fas fa-search"></i></button>
+                    <button aria-label="search" id="search-button"><i class="fas fa-search"></i></button>
                     <label for="searchbar"></label>
                     <input type="text" placeholder="Search for a song" name="searchbar" id="searchbar"></input>
                 </div>
@@ -58,6 +58,11 @@
                 <button aria-label="previous"><i class="fas fa-step-backward"></i></button>
                 <button aria-label="play pause"><i class="fas fa-play"></i></button>
                 <button aria-label="next"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="search-results">
+                <div class="card-container">
+
+                </div>
             </div>
         </div>
         <div class="card-container">
@@ -93,6 +98,10 @@
     <footer>
         Copyright 2020 Ajay Kristipati, Daniel Lin, Sailesh Sivakumar
     </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script><script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script> 
+  <script src="js/index.js"></script>
 </body>
 
 </html>

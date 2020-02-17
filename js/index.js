@@ -1,7 +1,7 @@
 $("#search-button")[0].addEventListener('click', function (event) {
     event.preventDefault();
     var query = $("#searchbar")[0].value;
-    const API_KEY = "AIzaSyAyXRt8Od6-FVEI6LbOQQfsPI4y8iAJ5Ro";
+
 
     var myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
@@ -12,7 +12,7 @@ $("#search-button")[0].addEventListener('click', function (event) {
         redirect: 'follow'
     };
 
-    fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" + query + "&key=" + API_KEY, requestOptions)
+    fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" + query + "&key=" + config.API_KEY, requestOptions)
         .then(response => response.text())
         .then(result => {
             results = JSON.parse(result).items;

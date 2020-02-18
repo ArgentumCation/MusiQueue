@@ -304,7 +304,7 @@ footer {
 
   .dashboard {
     flex: 1 1 auto;
-    margin: auto;
+    /* margin: auto; */
   }
 }
 

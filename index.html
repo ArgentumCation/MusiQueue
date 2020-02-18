@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="./style/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.css">
     <meta name="author" content="Sailesh Sivakumar">
@@ -20,11 +21,11 @@
         <nav>
             <ul class="menu">
                 <li class="logo"><a href="#">
-                        <h1>Queuer</h1>
+                        <h1><a href="#">Queuer</a></h1>
                     </a></li>
                 <li class="item"><a href="#">Home</a></li>
                 <li class="item"><a href="./about.html">About</a></li>
-                <li class="item"><a href="https://github.com/info340b-wi20/project-ajayk111">GitHub</a></li>
+                <li class="item"><a href="https://github.com/info340b-wi20/project-ajayk111" target="_blank">GitHub</a></li>
                 <li class="toggle" aria-label="menu"><a href="#"><i class="fas fa-bars"></i></a></li>
 
                 <script>
@@ -45,7 +46,10 @@
     </header>
     <main class="main">
         <div class="dashboard">
-            <div class="dashbord-text">Room Code: VFWR</div>
+            <div class="room-functions">
+                <button type="button" id="join-room" class="btn btn-primary btn-lg">Join room</button>
+                <button type="button" id="create-room" class="btn btn-secondary btn-lg">Create room</button>
+            </div>
 
             <form>
                 <div class="search">

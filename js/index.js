@@ -46,6 +46,19 @@ $("#search-button")[0].addEventListener('click', function(event) {
     .catch(error => console.log('error', error));
 })
 
+let roomFunctions = document.querySelector('.room-functions');
+$("#join-room")[0].addEventListener('click', function() {
+  newForm = document.createElement('input');
+  newForm.setAttribute('placeholder', 'Enter room code');
+  roomFunctions.appendChild(newForm);
+  $("#join-room")[0].disabled = true;
+})
+$("#create-room")[0].addEventListener('click', function() {
+  newP = document.createElement('p');
+  newP.textContent = "Room code: VFWR";
+  roomFunctions.appendChild(newP);
+  $("#create-room")[0].disabled = true;
+})
 
 function renderQueue() {
   $('.card-container')[1].innerHTML = "";

@@ -20,29 +20,29 @@
     <header>
         <nav>
             <ul class="menu">
-                <div class="menu">
-                    <li class="logo"><a href="#">
-                            <h1><a href="#">Queuer</a></h1>
-                        </a></li>
-                    <li class="item"><a href="index.html">Home</a></li>
-                    <li class="item"><a href="about.html">About</a></li>
-                    <li class="item"><a href="https://github.com/info340b-wi20/project-ajayk111" target="_blank" rel="noopener">GitHub</a></li>
-                    <li class="toggle" aria-label="menu"><a href="#"><i class="fas fa-bars"></i></a></li>
+                <!-- <div class="menu"> -->
+                <li class="logo"><a href="#">
+                        <h1><a href="#">Queuer</a></h1>
+                    </a></li>
+                <li class="item"><a href="index.html">Home</a></li>
+                <li class="item"><a href="about.html">About</a></li>
+                <li class="item"><a href="https://github.com/info340b-wi20/project-ajayk111" target="_blank" rel="noopener">GitHub</a></li>
+                <li class="toggle" aria-label="menu"><a href="#"><i class="fas fa-bars"></i></a></li>
 
-                    <script>
-                        $(function() {
-                            $(".toggle").on("click", function() {
-                                $(".item").each(function(i) {
-                                    if (this.style.display === "block") {
-                                        this.style.display = "none";
-                                    } else {
-                                        this.style.display = "block";
-                                    }
-                                })
+                <script>
+                    $(function() {
+                        $(".toggle").on("click", function() {
+                            $(".item").each(function(i) {
+                                if (this.style.display === "block") {
+                                    this.style.display = "none";
+                                } else {
+                                    this.style.display = "block";
+                                }
                             })
-                        });
-                    </script>
-                </div>
+                        })
+                    });
+                </script>
+                <!-- </div> -->
             </ul>
         </nav>
     </header>

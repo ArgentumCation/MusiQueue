@@ -125,7 +125,7 @@ $("#next")[0].addEventListener('click',function(){
 let roomFunctions = document.querySelector('.room-functions');
 let newForm = document.createElement('input');
 $("#join-room")[0].addEventListener('click', function() {
-  $("#room-input").style.display = "inherit";
+  $("#room-input")[0].style.display = "inherit";
   $("#join-room")[0].disabled = true;
 })
 $("#create-room")[0].addEventListener('click', function() {

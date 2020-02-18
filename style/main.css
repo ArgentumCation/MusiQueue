@@ -338,3 +338,7 @@ p {
   display: flex;
   flex-direction: row;
 }
+
+#room-input {
+  display: none;
+}

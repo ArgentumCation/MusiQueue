@@ -77,10 +77,7 @@ $("#next")[0].addEventListener('click',function(){
 let roomFunctions = document.querySelector('.room-functions');
 let newForm = document.createElement('input');
 $("#join-room")[0].addEventListener('click', function() {
-  newForm = document.createElement('input');
-  newForm.setAttribute('placeholder', 'Enter room code');
-  newForm.setAttribute('id', 'room-input');
-  roomFunctions.appendChild(newForm);
+  $("#room-input").style.display = "inherit";
   $("#join-room")[0].disabled = true;
 })
 $("#create-room")[0].addEventListener('click', function() {

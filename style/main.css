@@ -40,7 +40,7 @@ header {
 .card {
   color: black;
   display: grid;
-  grid-template-columns: auto 4fr 1fr 0.5fr;
+  grid-template-columns: auto 4fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas: "Art Title Title Length""Art Artist Artist Artist";
   background-color: #eee;
@@ -245,7 +245,7 @@ main.about {
   color: white;
   background-color: darkred;
   width: 2em;
-  margin-right: auto;
+  margin-left: 2.5em;
 }
 
 .dashboard .media-controls {

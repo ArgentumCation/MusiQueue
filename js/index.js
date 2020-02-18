@@ -1,3 +1,6 @@
+//const API_KEY = "AIzaSyAyXRt8Od6-FVEI6LbOQQfsPI4y8iAJ5Ro";
+const API_KEY = "AIzaSyCwlrxe-0OpRgnkt31ng6LXGRGbTnX0Vb4";
+var player;
 var state = {
   queue: []
 }
@@ -21,18 +24,18 @@ $("#search-button")[0].addEventListener('click', function(event) {
   fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" + query + "&key=" + API_KEY, requestOptions)
     .then(response => response.text())
     .then(result => {
-      results = JSON.parse(result).items;
-      for (item of results) {
+      var results = JSON.parse(result).items;
+      for (var item of results) {
         // console.log(item);
 
-        song = {
+        var song = {
           title: item.snippet.title,
           artist: item.snippet.channelTitle,
           cover: item.snippet.thumbnails.default.url,
           id: item.id.videoId
         }
         if (song.id != undefined) {
-          card = generateCard(song);
+          var card = generateCard(song);
           //Add cards to queue
           card.addEventListener('click', function(event) {
             song = JSON.parse($($(event.target).closest('.card')[0]).children()[2].innerHTML);
@@ -66,16 +69,22 @@ $("#play")[0].addEventListener('click',function(event){
   }
 })
 
+$("#next")[0].addEventListener('click',function(){
+    var duration = player.getDuration();
+    player.seekTo(duration-1);
+});
+
 let roomFunctions = document.querySelector('.room-functions');
 let newForm = document.createElement('input');
 $("#join-room")[0].addEventListener('click', function() {
+  newForm = document.createElement('input');
   newForm.setAttribute('placeholder', 'Enter room code');
   newForm.setAttribute('id', 'room-input');
   roomFunctions.appendChild(newForm);
   $("#join-room")[0].disabled = true;
 })
 $("#create-room")[0].addEventListener('click', function() {
-  newP = document.createElement('p');
+  var newP = document.createElement('p');
   newP.textContent = "Room code: VFWR";
   roomFunctions.appendChild(newP);
   $("#create-room")[0].disabled = true;
@@ -88,7 +97,7 @@ $("#create-room")[0].addEventListener('click', function() {
 function renderQueue() {
   $('.card-container')[1].innerHTML = "";
   for (var song of state.queue) {
-    card = generateCard(song);
+    var card = generateCard(song);
     card.innerHTML += "<button aria-label='Close Account Info Modal Box'>&times;</button>";
 
 
@@ -103,11 +112,11 @@ function renderQueue() {
     })
     $('.card-container')[1].appendChild(card);
   }
-  var playlist = [];
+  /*var playlist = [];
   for(var song of state.queue){
     playlist.push(song.id);
   }
-  player.cuePlaylist(playlist);
+  player.cuePlaylist(playlist);*/
 }
 
 

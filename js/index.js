@@ -85,6 +85,8 @@ function renderQueue() {
   $('.card-container')[1].innerHTML = "";
   for (var song of state.queue) {
     card = generateCard(song);
+    card.innerHTML += "<button aria-label='Close Account Info Modal Box'>&times;</button>";
+    
 
     //Event listener to remove the a song from queue
     card.addEventListener('click', function(event) {

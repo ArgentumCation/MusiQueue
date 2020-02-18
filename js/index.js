@@ -67,9 +67,10 @@ $("#play")[0].addEventListener('click',function(event){
 })
 
 let roomFunctions = document.querySelector('.room-functions');
+let newForm = document.createElement('input');
 $("#join-room")[0].addEventListener('click', function() {
-  newForm = document.createElement('input');
   newForm.setAttribute('placeholder', 'Enter room code');
+  newForm.setAttribute('id', 'room-input');
   roomFunctions.appendChild(newForm);
   $("#join-room")[0].disabled = true;
 })
@@ -79,6 +80,9 @@ $("#create-room")[0].addEventListener('click', function() {
   roomFunctions.appendChild(newP);
   $("#create-room")[0].disabled = true;
 })
+// newForm.addEventListener('keydown', function(input) {
+//   console.log(input);
+// })
 
 //Draw the queue
 function renderQueue() {

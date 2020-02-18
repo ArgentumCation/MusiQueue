@@ -307,3 +307,12 @@ footer {
     margin: auto;
   }
 }
+
+.btn {
+  margin: 1rem;
+}
+
+.room-functions {
+  display: flex;
+  flex-direction: row;
+}

@@ -60,10 +60,22 @@ $("#create-room")[0].addEventListener('click', function() {
   $("#create-room")[0].disabled = true;
 })
 
+//Draw the queue
 function renderQueue() {
   $('.card-container')[1].innerHTML = "";
   for (var song of state.queue) {
-    $('.card-container')[1].appendChild(generateCard(song));
+    card = generateCard(song);
+
+    //Event listener to remove the a song from queue
+    card.addEventListener('click', function(event) {
+      var song = JSON.parse($($(event.target).closest('.card')[0]).children()[2].innerHTML);
+      var songIndex = state.queue.findIndex((element) => {
+        return element.id == song.id;
+      });
+      state.queue.splice(songIndex,1);
+      renderQueue();
+    })
+    $('.card-container')[1].appendChild(card);
   }
 }
 

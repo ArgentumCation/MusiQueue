@@ -66,6 +66,11 @@ $("#play")[0].addEventListener('click',function(event){
   }
 })
 
+$("#next")[0].addEventListener('click',function(event){
+    var duration = player.getDuration();
+    player.seekTo(duration-1);
+});
+
 let roomFunctions = document.querySelector('.room-functions');
 $("#join-room")[0].addEventListener('click', function() {
   newForm = document.createElement('input');
@@ -86,7 +91,7 @@ function renderQueue() {
   for (var song of state.queue) {
     card = generateCard(song);
     card.innerHTML += "<button aria-label='Close Account Info Modal Box'>&times;</button>";
-    
+
 
     //Event listener to remove the a song from queue
     card.addEventListener('click', function(event) {
@@ -99,6 +104,11 @@ function renderQueue() {
     })
     $('.card-container')[1].appendChild(card);
   }
+  /*var playlist = [];
+  for(var song of state.queue){
+    playlist.push(song.id);
+  }
+  player.cuePlaylist(playlist);*/
 }
 
 

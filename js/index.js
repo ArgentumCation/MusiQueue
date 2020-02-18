@@ -1,3 +1,6 @@
+var state = {
+  queue: []
+}
 $("#search-button")[0].addEventListener('click', function(event) {
 
 //Clear Search Results
@@ -30,6 +33,11 @@ $("#search-button")[0].addEventListener('click', function(event) {
         }
 
         card = generateCard(song);
+        card.addEventListener('click',function(event){
+          song = JSON.parse($($(event.target).closest('.card')[0]).children()[2].innerHTML);
+          console.log(song);
+          state.queue.push(song);
+        })
         $(".search-results .card-container")[0].appendChild(card)
       }
     })
@@ -49,10 +57,10 @@ function generateCard(song) {
   var songArtist = document.createElement('p');
   songArtist.className = "song-artist";
   songArtist.innerHTML = song.artist;
-  var songvideoID = document.createElement('p');
-  songvideoID.className = "song-length";
-  songvideoID.innerHTML = song.id;
-  songvideoID.style.visibility = 'invisible'
+  var songJSON = document.createElement('p');
+  songJSON.className = "song-length";
+  songJSON.innerHTML = JSON.stringify(song);
+
 
 
   var image = document.createElement('div');
@@ -62,7 +70,7 @@ function generateCard(song) {
   image.appendChild(picture);
   card.appendChild(songTitle);
   card.appendChild(songArtist);
-  card.appendChild(songvideoID);
+  card.appendChild(songJSON);
   card.appendChild(image);
   return card;
 }

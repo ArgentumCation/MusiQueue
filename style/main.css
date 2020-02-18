@@ -72,6 +72,7 @@ header {
 }
 
 .song-length {
+  display: none;
   margin-top: auto;
   margin-bottom: auto;
   text-align: right;
@@ -152,15 +153,15 @@ main.about {
     flex-direction: column;
 }
 
-.about p { 
+.about p {
   margin: 0.5rem;
 }
 
-.about h1 { 
+.about h1 {
   margin: 0.5rem;
 }
 
-.about h2 { 
+.about h2 {
   margin: 0.5rem;
 }
 
@@ -168,7 +169,7 @@ main.about {
   margin: 0.5rem;
 }
 
-.about ol { 
+.about ol {
   margin: 0.5rem;
 }
 

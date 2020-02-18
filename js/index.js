@@ -3,7 +3,7 @@ var state = {
 }
 $("#search-button")[0].addEventListener('click', function(event) {
 
-//Clear Search Results
+  //Clear Search Results
   $(".search-results .card-container")[0].innerHTML = "";
   event.preventDefault();
   var query = $("#searchbar")[0].value;
@@ -31,20 +31,28 @@ $("#search-button")[0].addEventListener('click', function(event) {
           cover: item.snippet.thumbnails.default.url,
           id: item.id.videoId
         }
-
-        card = generateCard(song);
-        card.addEventListener('click',function(event){
-          song = JSON.parse($($(event.target).closest('.card')[0]).children()[2].innerHTML);
-          console.log(song);
-          state.queue.push(song);
-        })
-        $(".search-results .card-container")[0].appendChild(card)
+        if (song.id != undefined) {
+          card = generateCard(song);
+          card.addEventListener('click', function(event) {
+            song = JSON.parse($($(event.target).closest('.card')[0]).children()[2].innerHTML);
+            // console.log(song);
+            state.queue.push(song);
+            renderQueue();
+          })
+          $(".search-results .card-container")[0].appendChild(card)
+        }
       }
     })
     .catch(error => console.log('error', error));
 })
 
 
+function renderQueue() {
+  $('.card-container')[1].innerHTML = "";
+  for (var song of state.queue) {
+    $('.card-container')[1].appendChild(generateCard(song));
+  }
+}
 
 
 function generateCard(song) {

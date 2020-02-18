@@ -12,7 +12,7 @@ $("#search-button")[0].addEventListener('click', function (event) {
         redirect: 'follow'
     };
 
-    fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" + query + "&key=" + config.API_KEY, requestOptions)
+    fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" + query + "&key=" + API_KEY, requestOptions)
         .then(response => response.text())
         .then(result => {
             results = JSON.parse(result).items;

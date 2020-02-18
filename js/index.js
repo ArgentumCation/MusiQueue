@@ -1,9 +1,57 @@
 //const API_KEY = "AIzaSyAyXRt8Od6-FVEI6LbOQQfsPI4y8iAJ5Ro";
 const API_KEY = "AIzaSyCwlrxe-0OpRgnkt31ng6LXGRGbTnX0Vb4";
-var player;
+var YT;
 var state = {
   queue: []
 }
+
+
+// 2. This code loads the IFrame Player API code asynchronously.
+var tag = document.createElement('script');
+
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+// 3. This function creates an iframe (and YouTube player)
+//    after the API code downloads.
+var player;
+var onYouTubeIframeAPIReady = function (){
+  //stub to get jest to shut up
+}
+onYouTubeIframeAPIReady();
+onYouTubeIframeAPIReady = function() {
+    player = new YT.Player('player', {
+
+
+        videoId: '8tPnX7OPo0Q',
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+// 4. The API will call this function when the video player is ready.
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
+
+
+
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.ENDED) {
+        state.queue.shift();
+        if (state.queue.length > 0) {
+            player.loadVideoById(state.queue[0].id)
+        }
+        renderQueue();
+    }
+}
+
+
+
+
 $("#search-button")[0].addEventListener('click', function(event) {
 
   //Clear Search Results

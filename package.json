@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "http-server": "^0.12.1",
     "jest-style-matchers": "^0.1.2"
   },
   "eslintConfig": {
@@ -38,6 +39,7 @@
   },
   "dependencies": {
     "htmllint": "^0.8.0",
-    "lint": "^0.7.0"
+    "lint": "^0.7.0",
+    "live-server-https": "0.0.2"
   }
 }

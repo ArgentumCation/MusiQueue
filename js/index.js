@@ -33,10 +33,16 @@ $("#search-button")[0].addEventListener('click', function(event) {
         }
         if (song.id != undefined) {
           card = generateCard(song);
+          //Add cards to queue
           card.addEventListener('click', function(event) {
             song = JSON.parse($($(event.target).closest('.card')[0]).children()[2].innerHTML);
             // console.log(song);
+            if(state.queue.length == 0){
+              player.loadVideoById(song.id);
+              player.playVideo();
+            }
             state.queue.push(song);
+
             renderQueue();
           })
           $(".search-results .card-container")[0].appendChild(card)
@@ -44,6 +50,20 @@ $("#search-button")[0].addEventListener('click', function(event) {
       }
     })
     .catch(error => console.log('error', error));
+})
+
+
+//Play Button
+$("#play")[0].addEventListener('click',function(event){
+  event.preventDefault();
+  var playerState = player.getPlayerState();
+  if(playerState == 1)
+  {
+    player.pauseVideo();
+  }
+  else if (playerState == 2){
+    player.playVideo();
+  }
 })
 
 let roomFunctions = document.querySelector('.room-functions');

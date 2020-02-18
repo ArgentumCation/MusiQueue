@@ -66,6 +66,11 @@ $("#play")[0].addEventListener('click',function(event){
   }
 })
 
+$("#next")[0].addEventListener('click',function(event){
+    var duration = player.getDuration();
+    player.seekTo(duration-1);
+});
+
 let roomFunctions = document.querySelector('.room-functions');
 $("#join-room")[0].addEventListener('click', function() {
   newForm = document.createElement('input');
@@ -99,11 +104,11 @@ function renderQueue() {
     })
     $('.card-container')[1].appendChild(card);
   }
-  var playlist = [];
+  /*var playlist = [];
   for(var song of state.queue){
     playlist.push(song.id);
   }
-  player.cuePlaylist(playlist);
+  player.cuePlaylist(playlist);*/
 }
 
 

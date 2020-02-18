@@ -99,9 +99,12 @@
                 var done = false;
 
                 function onPlayerStateChange(event) {
-                    if (event.data == YT.PlayerState.PLAYING && !done) {
-                        setTimeout(stopVideo, 6000);
-                        done = true;
+                    if (event.data == YT.PlayerState.ENDED) {
+                        state.queue.shift();
+                        if (state.queue.length > 0) {
+                            player.loadVideoById(state.queue[0].id)
+                        }
+                        renderQueue();
                     }
                 }
 
@@ -110,9 +113,9 @@
                 }
             </script>
             <div class="media-controls">
-                <button id="previous" aria-label="previous"><i class="fas fa-step-backward"></i></button>
+                <!-- <button id="previous" aria-label="previous"><i class="fas fa-step-backward"></i></button> -->
                 <button id="play" aria-label="play pause"><i class="fas fa-play"></i></button>
-                <button id="pause" aria-label="next"><i class="fas fa-step-forward"></i></button>
+                <button id="next" aria-label="next"><i class="fas fa-step-forward"></i></button>
             </div>
             <div class="search-results">
                 <div class="card-container">

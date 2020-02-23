@@ -157,7 +157,7 @@ nav .item {
 }
 
 /*main*/
-main.main {
+main {
   padding: 1em;
   flex-grow: 1;
   display: flex;
@@ -334,7 +334,7 @@ footer {
     display: none;
   }
 
-  main.main {
+  main {
     flex-direction: row;
   }
 

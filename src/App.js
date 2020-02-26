@@ -185,6 +185,22 @@ class SearchCard extends Component {
   }
 }
 
+class QueueCard extends Component {
+  render() {
+    let song = this.props.song;
+    let removeFromQueue = this.props.dequeueCallback;
+    return (<div className="card" onClick={() => removeFromQueue(song)}>
+      <p className="song-title">{song.title}</p>
+      <p className="song-artist">{song.artist}</p>
+      <p className="song-length">{JSON.stringify(song)}</p>
+
+      <div className="song-art">
+        <img src={song.cover}/>
+      </div>
+    </div>);
+  }
+}
+
 class MediaControls extends Component {
   render() {
     return (<div className="media-controls">
@@ -319,7 +335,7 @@ class Queue extends Component {
     return (<div>
       <div className="queue-header">Queue</div>
       <div className="card-container">
-        {this.props.songQueue.map((el) => <SearchCard key={el.id} song={el}/>)}
+        {this.props.songQueue.map((el) => <QueueCard key={el.id} song={el} dequeueCallback={() => console.log("TODO: IMPLEMENT THIS")}/>)}
       </div>
     </div>);
   }

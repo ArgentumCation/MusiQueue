@@ -34,9 +34,20 @@ class App extends Component {
     }
   }
 
+  enqueue = (song) => {
+    let queue = this.state.queue;
+    queue.push(song);
+    this.setState({queue: queue})
+  }
+  dequeue = (song) => {
+    let queue = this.state.queue;
+    queue.shift();
+    this.setState({queue: queue})
+  }
+
   render() {
     return (<div><Header displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/>
-      <Main/>
+      <Main dequeue={this.dequeue} enqueue={this.enqueue} songQueue={this.state.queue}/>
       <Footer/>
     </div>);
   }
@@ -78,11 +89,12 @@ class Logo extends Component {
     </li>);
   }
 }
+
 class Main extends Component {
   render() {
     return (<main>
-      <Dashboard/>
-      <Queue/>
+      <Dashboard dequeue={this.props.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
+      <Queue dequeue={this.props.dequeue} songQueue={this.props.songQueue}/>
     </main>);
   }
 }
@@ -193,8 +205,12 @@ class Dashboard extends Component {
     this.player = React.createRef();
     this.state = {
       searchResults: [],
-      queue: []
+      playerVisible: false
     }
+  }
+
+  showPlayer() {
+    this.setState({playerVisible: true})
   }
 
   updateSearchResults = (songs) => {
@@ -202,16 +218,15 @@ class Dashboard extends Component {
   }
 
   addToQueue = (song) => {
-    if (this.state.queue.length == 0) {
-      console.log(song.id);
+    if (this.props.songQueue == 0) {
+      this.showPlayer()
 
-      //this.player.current.player.loadVideoById('8Oz8gCJy2-Q');
       this.player.current.player.loadVideoById(song.id);
 
     }
-    this.state.queue.push(song);
-  }
+    this.props.enqueue(song)
 
+  }
   render() {
     return (<div className="dashboard">
       <Instructions/>
@@ -222,8 +237,14 @@ class Dashboard extends Component {
       <input type="text" id="room-input" placeholder="Enter room code"/>
 
       <SearchForm searchCallback={this.updateSearchResults}/>
-      <YouTube ref={this.player} YTid="8tPnX7OPo0Q"/>
 
+      <div style={{
+          display: this.state.playerVisible
+            ? 'block'
+            : 'none'
+        }}>
+        <YouTube songQueue={this.props.songQueue} dequeue={this.props.dequeue} ref={this.player} show={this.showPlayer} YTid="8tPnX7OPo0Q"/>
+      </div>
       <MediaControls/>
       <SearchResults enqueueCallback={this.addToQueue} songList={this.state.searchResults}/>
     </div>);
@@ -238,7 +259,7 @@ class SearchResults extends Component {
       <div className="card-container">
         {
           (this.props.songList)
-            ? this.props.songList.map((el) => <SearchCard enqueueCallback={addToQueue} song={el}/>)
+            ? this.props.songList.map((el) => <SearchCard enqueueCallback={addToQueue} key={el.id} song={el}/>)
             : ' '
         }
       </div>
@@ -266,68 +287,40 @@ class YouTube extends Component {
         videoId: this.props.YTid,
         events: {
           onReady: this.onPlayerReady,
-          onStateChange: this.onPlayerStateChange
+          onStateChange: (event) => {
+            if (event.data == YT.PlayerState.ENDED) {
+              console.log(this.props.songQueue.length);
+              this.props.dequeue();
+              console.log(this.props.songQueue[0]);
+              if (this.props.songQueue.length > 0) {
+                this.player.loadVideoById(this.props.songQueue[0].id)
+              }
+
+            }
+          }
         }
-      })
+      });
+
     })
   }
 
   onPlayerReady = (event) => {
     event.target.playVideo();
-
-  }
-
-  //Todo
-  onPlayerStateChange = (event) => {
-    if (typeof this.props.onStateChange === 'function') {
-      this.props.onStateChange(event)
-    }
   }
 
   render() {
-
     return (<div id='player'></div>)
   }
 }
 
-class Player extends Component {
-
-  onPlayerReady(event) {
-    event.target.playVideo();
-  }
-
-  loadPlayer() {
-    var YT;
-    var tag = document.createElement('script');
-
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    var player;
-    function onYouTubeIframeAPIReady() {
-
-      player = new YT.Player('player', {
-        height: '390',
-        width: '640',
-        videoId: 'M7lc1UVf-VE',
-        events: {
-          'onReady': this.onPlayerReady
-        }
-      });
-    }
-
-  }
-  render() {
-    this.loadPlayer();
-    return (<div id="player"></div>);
-  }
-}
-
 class Queue extends Component {
+  componentDidUpdate(prevProps) {}
   render() {
     return (<div>
       <div className="queue-header">Queue</div>
-      <div className="card-container"></div>
+      <div className="card-container">
+        {this.props.songQueue.map((el) => <SearchCard key={el.id} song={el}/>)}
+      </div>
     </div>);
   }
 }

@@ -127,22 +127,22 @@ class SearchForm extends Component {
 
     //Make the API Request
     let query = this.state.value;
-    var myHeaders = new Headers();
+    let myHeaders = new Headers();
     myHeaders.append("Accept", "application/json");
 
-    var requestOptions = {
+    let requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow'
     };
 
     fetch("https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=" + query + "&key=" + API_KEY, requestOptions).then(response => response.text()).then(result => {
-      var results = JSON.parse(result).items;
-      var songList = []
-      for (var item of results) {
+      let results = JSON.parse(result).items;
+      let songList = []
+      for (const item of results) {
         //Process API Response
 
-        var song = {
+        let song = {
           title: item.snippet.title,
           artist: item.snippet.channelTitle,
           cover: item.snippet.thumbnails.default.url,

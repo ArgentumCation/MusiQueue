@@ -158,6 +158,7 @@ class SearchForm extends Component {
       this.props.searchCallback(songList);
     }).catch(error => console.log('error', error));
   }
+
   render() {
     return (<form>
       <div className="search">
@@ -192,7 +193,8 @@ class QueueCard extends Component {
   render() {
     let song = this.props.song;
     let removeFromQueue = this.props.dequeueCallback;
-    return (<div className="card" onClick={() => removeFromQueue(song)}>
+    return (<div className="card">
+      <button className="close-button" aria-label="Close Account Info Modal Box" onClick={() => removeFromQueue(song)}>&times;</button>
       <p className="song-title">{song.title}</p>
       <p className="song-artist">{song.artist}</p>
       <p className="song-length">{JSON.stringify(song)}</p>

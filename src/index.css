@@ -139,7 +139,7 @@ nav .item {
   text-decoration: none;
 }
 
-.menu button {
+.menu {
   color: var(--text-color);
   text-decoration: none;
   font-size: 1em;
@@ -249,11 +249,14 @@ main.about {
 
 .close-button {
   grid-area: Length;
-  border-radius: 15px 15px 15px 15px;
+  border-radius: 20px 20px 20px 20px;
   color: white;
   background-color: darkred;
   width: 2em;
   margin-left: 2.5em;
+  margin-right: 0.2em;
+  margin-top: 0.1em;
+  font-size: medium;
 }
 
 .dashboard .media-controls {

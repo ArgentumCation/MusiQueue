@@ -249,14 +249,21 @@ main.about {
 
 .close-button {
   grid-area: Length;
-  border-radius: 20px 20px 20px 20px;
+  border-radius: 30px 30px 30px 30px;
   color: white;
   background-color: darkred;
-  width: 2em;
-  margin-left: 2.5em;
-  margin-right: 0.2em;
-  margin-top: 0.1em;
-  font-size: medium;
+  width: 1.8em;
+  height: 1.8em;
+  margin: auto;
+  font-size: x-small;
+  -webkit-transition: opacity 0.25s ease-out;
+  -moz-transition: opacity 0.25s ease-out;
+  -o-transition: opacity 0.25s ease-out;
+  transition: opacity 0.25s ease-out;
+}
+
+.close-button:hover {
+  opacity: 0.7;
 }
 
 .dashboard .media-controls {

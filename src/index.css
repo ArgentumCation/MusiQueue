@@ -383,6 +383,14 @@ p {
   flex-direction: row;
 }
 
+.room-functions button {
+  background-color: #757575;
+  border-radius: 5em;
+  width: 10em;
+  height: 2em;
+  color: wheat;
+}
+
 #room-input {
   display: none;
 }

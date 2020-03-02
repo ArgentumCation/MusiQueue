@@ -41,7 +41,10 @@ class App extends Component {
   }
   dequeue = (song) => {
     let queue = this.state.queue;
-    queue.shift();
+    const index = queue.indexOf(song, 0)
+    if (index > -1) {
+      queue.splice(index, 1)
+    }
     this.setState({queue: queue})
   }
 
@@ -103,7 +106,7 @@ class Instructions extends Component {
   render() {
     return (<p>
       <strong>Instructions:
-      </strong>Select "Join room" if somebody is already hosting a listening session. Otherwise, click "Create room" to begin a session. Then, search for a song below and click to add it to the queue. Click on a song in the queue to remove it</p>);
+      </strong> Select "Join room" if somebody is already hosting a listening session. Otherwise, click "Create room" to begin a session. Then, search for a song below and click to add it to the queue. Click on a song in the queue to remove it</p>);
   }
 }
 
@@ -330,12 +333,16 @@ class YouTube extends Component {
 }
 
 class Queue extends Component {
+  removeFromQueue = (song) => {
+    this.props.dequeue(song)
+  }
   componentDidUpdate(prevProps) {}
   render() {
     return (<div>
       <div className="queue-header">Queue</div>
       <div className="card-container">
-        {this.props.songQueue.map((el) => <QueueCard key={el.id} song={el} dequeueCallback={() => console.log("TODO: IMPLEMENT THIS")}/>)}
+        {this.props.songQueue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el} 
+           />)}
       </div>
     </div>);
   }

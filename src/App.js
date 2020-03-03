@@ -206,11 +206,23 @@ class QueueCard extends Component {
   }
 }
 
-class MediaControls extends Component {
+class MediaControls extends Component { 
   render() {
+    let player = this.props.player;
     return (<div className="media-controls">
 
-      <button id="play" aria-label="play pause">
+      <button id="play" aria-label="play pause" onClick={(event) => {
+        event.preventDefault();
+        console.log("test");
+        let playerState = player.current.player.getPlayerState();
+        if(playerState == 1)
+        {
+          player.current.player.pauseVideo();
+        }
+        else if (playerState == 2){
+          player.current.player.playVideo();
+        }
+      }}>
         <FontAwesomeIcon icon={faPlay}/>
       </button>
       <button id="next" aria-label="next">
@@ -266,7 +278,7 @@ class Dashboard extends Component {
         }}>
         <YouTube songQueue={this.props.songQueue} dequeue={this.props.dequeue} ref={this.player} show={this.showPlayer} YTid="8tPnX7OPo0Q"/>
       </div>
-      <MediaControls/>
+      <MediaControls player={this.player}/>
       <SearchResults enqueueCallback={this.addToQueue} songList={this.state.searchResults}/>
     </div>);
   }

@@ -104,10 +104,7 @@ nav {
   -moz-transition: background-color 1s ease-out;
   -o-transition: background-color 1s ease-out;
   transition: background-color 1s ease-out;
-}
-
-nav:hover {
-  background-color: #871f78;
+  background: linear-gradient(20deg, var(--accent-color), #871f78);
 }
 
 nav ul {
@@ -316,6 +313,7 @@ footer {
   -moz-transition: background-color 1s ease-out;
   -o-transition: background-color 1s ease-out;
   transition: background-color 1s ease-out;
+  background: linear-gradient(20deg, var(--accent-color), #871f78);
 }
 
 footer:hover {
@@ -388,6 +386,14 @@ p {
   border-radius: 5em;
   width: 10em;
   height: 2em;
+  color: white;
+  -webkit-transition: background-color 1s ease-out;
+  -moz-transition: background-color 1s ease-out;
+  -o-transition: background-color 1s ease-out;
+  transition: background-color 1s ease-out;
+}
+
+.room-functions button:hover {
   color: wheat;
 }
 

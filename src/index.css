@@ -50,7 +50,7 @@ header {
   grid-template-columns: auto 4fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas: "Art Title Title Length""Art Artist Artist Artist";
-  background-color: #eee;
+  background-color: #fffaf7;
   border-radius: 5px;
   height: 4em;
   margin-bottom: 1em;
@@ -279,7 +279,7 @@ main.about {
 }
 
 .media-controls {
-  background: #f2dcc5;
+  background: #fffaf7;
 }
 
 .media-controls button {
@@ -401,7 +401,7 @@ p {
 }
 
 .room-functions button:hover {
-  color: wheat;
+  color: #f2dcc5;
 }
 
 #room-input {

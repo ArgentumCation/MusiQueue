@@ -1,14 +1,21 @@
+@import url("https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap");
+
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  --accent-color: #9C27B0;
-  --text-color: #ddd;
-  --background-color: #111;
+  --accent-color: #002447;
+  --text-color: #fffaf7;
+  --background-color: #79c5e7;
 }
 
 html {
   height: 100%;
+}
+
+h1 {
+  font-family: "Bebas Neue", "Roboto", "Helvetica", sans-serif;
+  font-size: 45px;
 }
 
 body {
@@ -17,7 +24,7 @@ body {
   flex-direction: column;
   align-items: stretch;
   min-height: 100%;
-  font-family: "Roboto", "Helvetica", sans-serif;
+  font-family: "Opens Sans", "Roboto", "Helvetica", sans-serif;
   color: var(--text-color)
 }
 
@@ -100,11 +107,11 @@ nav {
   background-color: var(--accent-color);
   box-shadow: 0px 1px 1px #eeeeee6b;
   border-radius: 5px 5px 5px 5px;
-  -webkit-transition: background-color 1s ease-out;
+  /* -webkit-transition: background-color 1s ease-out;
   -moz-transition: background-color 1s ease-out;
   -o-transition: background-color 1s ease-out;
   transition: background-color 1s ease-out;
-  background: linear-gradient(20deg, var(--accent-color), #871f78);
+  background: linear-gradient(20deg, var(--accent-color), #bc672c); */
 }
 
 nav ul {
@@ -272,7 +279,7 @@ main.about {
 }
 
 .media-controls {
-  background: #757575;
+  background: #f2dcc5;
 }
 
 .media-controls button {
@@ -281,7 +288,7 @@ main.about {
   border-radius: 5em;
   border: none;
   margin: auto;
-  background-color: #757575;
+  background-color: #bc672c;
   color: var(--text-color);
 }
 
@@ -309,11 +316,11 @@ footer {
   flex-shrink: 0;
   border-radius: 5px 5px 0 0;
   box-shadow: 0px -1px 1px #eeeeee6b;
-  -webkit-transition: background-color 1s ease-out;
+  /* -webkit-transition: background-color 1s ease-out;
   -moz-transition: background-color 1s ease-out;
   -o-transition: background-color 1s ease-out;
   transition: background-color 1s ease-out;
-  background: linear-gradient(20deg, var(--accent-color), #871f78);
+  background: linear-gradient(20deg, var(--accent-color), #bc672c); */
 }
 
 footer:hover {
@@ -376,17 +383,21 @@ p {
   margin: 1rem;
 }
 
+#play, #next {
+  margin: 0.5rem;
+}
+
 .room-functions {
   display: flex;
   flex-direction: row;
 }
 
 .room-functions button {
-  background-color: #757575;
+  background-color: #bc672c;
   border-radius: 5em;
   width: 10em;
   height: 2em;
-  color: white;
+  color: #fffaf7;
   -webkit-transition: background-color 1s ease-out;
   -moz-transition: background-color 1s ease-out;
   -o-transition: background-color 1s ease-out;

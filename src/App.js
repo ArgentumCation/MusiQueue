@@ -87,7 +87,7 @@ class Logo extends Component {
   render() {
     return (<li className="logo">
       <h1>
-        <a href="index.html">Queuer</a>
+        <a href="index.html">MusiQueue</a>
       </h1>
     </li>);
   }

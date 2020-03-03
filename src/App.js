@@ -225,7 +225,10 @@ class MediaControls extends Component {
       }}>
         <FontAwesomeIcon icon={faPlay}/>
       </button>
-      <button id="next" aria-label="next">
+      <button id="next" aria-label="next" onClick={() => {
+          let duration = player.current.player.getDuration();
+          player.current.player.seekTo(duration-1);
+      }}>
         <FontAwesomeIcon icon={faStepForward}/>
       </button>
     </div>);

@@ -326,7 +326,7 @@ class YouTube extends Component {
           onStateChange: (event) => {
             if (event.data == YT.PlayerState.ENDED) {
               console.log(this.props.songQueue.length);
-              this.props.dequeue();
+              this.props.dequeue(this.props.songQueue[0]);
               console.log(this.props.songQueue[0]);
               if (this.props.songQueue.length > 0) {
                 this.player.loadVideoById(this.props.songQueue[0].id)

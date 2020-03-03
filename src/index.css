@@ -323,10 +323,6 @@ footer {
   background: linear-gradient(20deg, var(--accent-color), #bc672c); */
 }
 
-footer:hover {
-  background-color: #871f78;
-}
-
 /* desktop*/
 @media screen and (min-width:468px) {
   .search-results {

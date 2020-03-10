@@ -302,11 +302,15 @@ main.about {
 }
 
 .song-art:hover img{
-  content: url("play-button.jpg");
+  content: url("img/play-button.jpg");
   opacity: 0.8;
   height: 4em;
   width: 4em;
   margin-right: .5em;
+}
+
+.queue{
+  width: 100%;
 }
 
 /*/footer*/
@@ -322,6 +326,45 @@ footer {
   transition: background-color 1s ease-out;
   background: linear-gradient(20deg, var(--accent-color), #bc672c); */
 }
+
+
+.btn {
+  margin: 1rem;
+}
+
+p {
+  margin: 1rem;
+}
+
+#play, #next {
+  margin: 0.5rem;
+}
+
+.room-functions {
+  display: flex;
+  flex-direction: row;
+}
+
+.room-functions button {
+  background-color: #bc672c;
+  border-radius: 5em;
+  width: 10em;
+  height: 2em;
+  color: #fffaf7;
+  -webkit-transition: background-color 1s ease-out;
+  -moz-transition: background-color 1s ease-out;
+  -o-transition: background-color 1s ease-out;
+  transition: background-color 1s ease-out;
+}
+
+.room-functions button:hover {
+  color: #f2dcc5;
+}
+
+#room-input {
+  display: none;
+}
+
 
 /* desktop*/
 @media screen and (min-width:468px) {
@@ -369,41 +412,4 @@ footer {
     flex: 1 1 auto;
     /* margin: auto; */
   }
-}
-
-.btn {
-  margin: 1rem;
-}
-
-p {
-  margin: 1rem;
-}
-
-#play, #next {
-  margin: 0.5rem;
-}
-
-.room-functions {
-  display: flex;
-  flex-direction: row;
-}
-
-.room-functions button {
-  background-color: #bc672c;
-  border-radius: 5em;
-  width: 10em;
-  height: 2em;
-  color: #fffaf7;
-  -webkit-transition: background-color 1s ease-out;
-  -moz-transition: background-color 1s ease-out;
-  -o-transition: background-color 1s ease-out;
-  transition: background-color 1s ease-out;
-}
-
-.room-functions button:hover {
-  color: #f2dcc5;
-}
-
-#room-input {
-  display: none;
 }

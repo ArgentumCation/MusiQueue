@@ -410,6 +410,7 @@ class YouTube extends Component {
         window.onYouTubeIframeAPIReady = () => resolve(window.YT)
       })
     }
+    console.log(window.location);
     loadYT.then((YT) => {
       this.player = new YT.Player('player', {
         videoId: this.props.YTid,
@@ -426,7 +427,8 @@ class YouTube extends Component {
 
             }
           }
-        }
+        },
+        playerVars: {'origin': window.location.origin}
       });
 
     })
@@ -447,7 +449,7 @@ class Queue extends Component {
   }
   componentDidUpdate(prevProps) {}
   render() {
-    return (<div>
+    return (<div className="queue">
       <div className="queue-header">Queue</div>
       <div className="card-container">
         {this.props.songQueue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el}/>)}

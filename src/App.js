@@ -2,48 +2,76 @@ import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faBars, faSearch, faStepForward, faPlay} from '@fortawesome/free-solid-svg-icons'
 import {Switch, Route, Link, Redirect} from 'react-router-dom'
+import firebase from 'firebase/app'
 
 const API_KEY = "AIzaSyCwlrxe-0OpRgnkt31ng6LXGRGbTnX0Vb4";
 
-
-class About extends Component{
-  render(){
+class About extends Component {
+  render() {
     return <main className="about">
-        <h1>About Our App</h1>
-        <section>
-            <h3>App Description</h3>
-            <p>
-                The users of the application are guests in a space where Spotify music is played, in addition to
-                hosts who play
-                Spotify for their guests.
-            </p>
-            <p>
-                Users will use the application to queue music and vote on changes to the current queue. That is,
-                users have
-                the ability to see the entire music queue. They may search up music and add it to the queue. Any
-                songs in queue deemed
-                too unpopular may be voted on to be removed from queue, or simply removed by the host. Queuing
-                can be rate limited.
-            </p>
-            <p>
-                This app will help solve the problem by abstracting and automating the process of queuing songs.
-                This web app
-                leverages the ubiquity of internet-connected devices to reduce the work on the host's part. Such
-                abstraction has
-                the added benefit of anonymizing the guests' preferences.
-            </p>
-        </section>
-        <section>
-            <h3>How to Use</h3>
-            <ol>
-                <li>Host clicks on a button to create a party, revealing a code.</li>
-                <li>Guests click on a button to join a party using a code.</li>
-                <li>Host begins playing music on Spotify like normal.</li>
-                <li>Guests search for music and tap on results to add song to queue.</li>
-                <li>Occasionally a pop-up may ask all users if they want to skip the current track or genre.
-                </li>
-            </ol>
-        </section>
+      <h1>About Our App</h1>
+      <section>
+        <h3>App Description</h3>
+        <p>
+          The users of the application are guests in a space where Spotify music is played, in addition to hosts who play Spotify for their guests.
+        </p>
+        <p>
+          Users will use the application to queue music and vote on changes to the current queue. That is, users have the ability to see the entire music queue. They may search up music and add it to the queue. Any songs in queue deemed too unpopular may be voted on to be removed from queue, or simply removed by the host. Queuing can be rate limited.
+        </p>
+        <p>
+          This app will help solve the problem by abstracting and automating the process of queuing songs. This web app leverages the ubiquity of internet-connected devices to reduce the work on the host's part. Such abstraction has the added benefit of anonymizing the guests' preferences.
+        </p>
+      </section>
+      <section>
+        <h3>How to Use</h3>
+        <ol>
+          <li>Host clicks on a button to create a party, revealing a code.</li>
+          <li>Guests click on a button to join a party using a code.</li>
+          <li>Host begins playing music on Spotify like normal.</li>
+          <li>Guests search for music and tap on results to add song to queue.</li>
+          <li>Occasionally a pop-up may ask all users if they want to skip the current track or genre.
+          </li>
+        </ol>
+      </section>
+    </main>
+  }
+}
+
+class Login extends Component {
+  //handle signUp button
+  handleSignUp = (event) => {
+    event.preventDefault(); //don't submit
+
+    this.props.signUpCallback(this.state.email, this.state.password);
+
+  }
+  //update state for specific field
+  handleChange = (event) => {
+    let field = event.target.name; //which input
+    let value = event.target.value; //what value
+
+    let changes = {}; //object to hold changes
+    changes[field] = value; //change this field
+    this.setState(changes); //update state
+  }
+
+  //handle signIn button
+  handleSignIn = (event) => {
+    event.preventDefault(); //don't submit
+    this.props.signInCallback(this.state.email, this.state.password);
+    this.props.history.push("/")
+
+  }
+  render() {
+    return <main className="about">
+      <form>
+        <label htmlFor="email">Email</label>
+        <input id="email" type="email" name="email" onChange={this.handleChange}/>
+        <label htmlFor="password">Password</label>
+        <input id="password" type="password" name="password" onChange={this.handleChange}/>
+        <button className="action-btn" onClick={this.handleSignUp}>Sign-up</button>
+        <button className="action-btn" onClick={this.handleSignIn}>Sign-in</button>
+      </form>
     </main>
   }
 }
@@ -66,6 +94,32 @@ class App extends Component {
     });
   }
 
+  //Signs up user with firebase
+  handleSignUp = (email, password) => {
+
+    this.setState({errorMessage: null}); //clear any old errors
+
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+      var user = firebase.auth().currentUser;
+    }).catch((error) => this.setState({errorMessage: error.message}));
+  }
+
+  //Sign up with firebase
+  handleSignIn = (email, password) => {
+    this.setState({errorMessage: null}); //clear any old errors
+
+    /* TODO: sign in user here */
+    firebase.auth().signInWithEmailAndPassword(email, password).then().catch((error) => this.setState({errorMessage: error.message}));
+  }
+
+  //TODO: test
+  handleSignOut = () => {
+    this.setState({errorMessage: null}); //clear any old errors
+
+    /* TODO: sign out user here */
+    firebase.auth().signOut();
+  }
+
   constructor() {
     super()
     let mql = window.matchMedia('(min-width: 468px)');
@@ -78,6 +132,23 @@ class App extends Component {
     }
   }
 
+  componentDidMount() {
+    let unregFunc = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({user: user});
+      } else {
+        this.setState({user: null});
+      }
+      this.setState({loading: false});
+    });
+    this.setState({authUnRegFunc: unregFunc});
+
+  }
+
+  componentWillUnmount() {
+    this.state.authUnRegFunc();
+  }
+  //add/remove from song queue
   enqueue = (song) => {
     let queue = this.state.queue;
     queue.push(song);
@@ -97,15 +168,29 @@ class App extends Component {
     newProps.dequeue = this.dequeue;
     newProps.enqueue = this.enqueue;
     newProps.songQueue = this.state.queue;
+    console.log("rendering Main");
+    console.log(this.state.user)
+    newProps.signedIn = !(this.state.user == undefined);
+    console.log("RenderMain:");
+    console.log(newProps.signedIn)
     return (<Main {...newProps}/>)
   }
 
+  renderLogin = (props) => {
+    let newProps = props;
+    newProps.signUpCallback = this.handleSignUp;
+    newProps.signInCallback = this.handleSignIn;
+    return (<Login {...newProps}/>)
+  }
+
   render() {
+
     return (<div>
-      <Header displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/>
+      <Header displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
       <Switch>
         <Route exact="exact" path="/" render={this.renderMain}/>
         <Route exact="exact" path="/about" component={About}/>
+        <Route exact="exact" path="/login" render={this.renderLogin}/>
         <Route path="/:roomCode" render={this.renderMain}></Route>
       </Switch>
       <Footer/>
@@ -129,6 +214,9 @@ class Header extends Component {
               }, {
                 dest: "https://github.com/info340b-wi20/project-ajayk111",
                 text: "GitHub"
+              }, {
+                dest: "/login",
+                text: "Log In"
               }
             ].map((el) => <MenuItem key={el.text} displayMenu={this.props.displayMenu} dest={el.dest} text={el.text}/>)
           }
@@ -166,15 +254,15 @@ class Main extends Component {
 
   }
   componentDidMount() {
-    console.log(this.props);
     //let roomCode = "dummyValue";
     let roomCode = this.props.match.params.roomCode;
     this.setState({room: roomCode});
 
   }
   render() {
+
     return (<main>
-      <Dashboard room={this.state.room} history={this.props.history} dequeue={this.props.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
+      <Dashboard signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.props.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
       <Queue dequeue={this.props.dequeue} songQueue={this.props.songQueue}/>
     </main>);
   }
@@ -256,7 +344,7 @@ class SearchCard extends Component {
   render() {
     let song = this.props.song;
     let addToQueue = this.props.enqueueCallback;
-    return (<div className="card" onClick={() => addToQueue(song)}>
+    return (<div tabindex="0" role="button" className="card" onClick={() => addToQueue(song)}>
       <p className="song-title">{song.title}</p>
       <p className="song-artist">{song.artist}</p>
       <p className="song-length">{JSON.stringify(song)}</p>
@@ -272,7 +360,7 @@ class QueueCard extends Component {
   render() {
     let song = this.props.song;
     let removeFromQueue = this.props.dequeueCallback;
-    return (<div className="card">
+    return (<div className="card" tabindex="0" role="button">
       <button className="close-button" aria-label="Close Account Info Modal Box" onClick={() => removeFromQueue(song)}>&times;</button>
       <p className="song-title">{song.title}</p>
       <p className="song-artist">{song.artist}</p>
@@ -292,7 +380,7 @@ class MediaControls extends Component {
 
       <button id="play" aria-label="play pause" onClick={(event) => {
           event.preventDefault();
-          console.log("test");
+
           let playerState = player.current.player.getPlayerState();
           if (playerState == 1) {
             player.current.player.pauseVideo();
@@ -350,17 +438,19 @@ class Dashboard extends Component {
 
   createRoom = () => {
     let code = Math.random().toString(36).substring(2, 6);
-    console.log(this.props)
+
     this.props.history.push("/" + code);
 
   }
   render() {
+
     return (<div className="dashboard">
       <RoomCodeDisplay code={this.props.room}/>
       <Instructions/>
       <div className="room-functions">
-        <button type="button" id="join-room" className="btn btn-primary btn-lg">Join room</button>
-        <button type="button" id="create-room" onClick={this.createRoom} className="btn btn-secondary btn-lg">Create room</button>
+
+        <button disabled={!this.props.signedIn} type="button" id="join-room" className="action-btn">Join room</button>
+        <button type="button" disabled={!this.props.signedIn} id="create-room" onClick={this.createRoom} className="action-btn">Create room</button>
       </div>
       <input type="text" id="room-input" placeholder="Enter room code"/>
 
@@ -394,6 +484,7 @@ class SearchResults extends Component {
     </div>);
   }
 }
+
 let loadYT;
 class YouTube extends Component {
   constructor(props) {
@@ -410,7 +501,7 @@ class YouTube extends Component {
         window.onYouTubeIframeAPIReady = () => resolve(window.YT)
       })
     }
-    console.log(window.location);
+
     loadYT.then((YT) => {
       this.player = new YT.Player('player', {
         videoId: this.props.YTid,
@@ -418,9 +509,9 @@ class YouTube extends Component {
           onReady: this.onPlayerReady,
           onStateChange: (event) => {
             if (event.data == YT.PlayerState.ENDED) {
-              console.log(this.props.songQueue.length);
+              // console.log(this.props.songQueue.length);
               this.props.dequeue(this.props.songQueue[0]);
-              console.log(this.props.songQueue[0]);
+              // 1(this.props.songQueue[0]);
               if (this.props.songQueue.length > 0) {
                 this.player.loadVideoById(this.props.songQueue[0].id)
               }
@@ -428,7 +519,9 @@ class YouTube extends Component {
             }
           }
         },
-        playerVars: {'origin': window.location.origin}
+        playerVars: {
+          'origin': window.location.origin
+        }
       });
 
     })
@@ -465,22 +558,21 @@ class MenuItem extends Component {
     let dispayString = displayMenu
       ? "block"
       : "none";
-      if(!dest.startsWith('http')){
-        return (<li className="item" style={{
-            display: dispayString
-          }}>
+    if (!dest.startsWith('http')) {
+      return (<li className="item" style={{
+          display: dispayString
+        }}>
 
-          <Link to={dest}>{text}</Link>
-        </li>)
-      }
-      else{
-        return (<li className="item" style={{
-            display: dispayString
-          }}>
+        <Link to={dest}>{text}</Link>
+      </li>)
+    } else {
+      return (<li className="item" style={{
+          display: dispayString
+        }}>
 
-          <a href={dest}>{text}</a>
-        </li>)
-      }
+        <a href={dest}>{text}</a>
+      </li>)
+    }
 
   }
 }

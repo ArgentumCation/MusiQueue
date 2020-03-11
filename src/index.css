@@ -343,11 +343,17 @@ p {
 .room-functions {
   display: flex;
   flex-direction: row;
+
 }
 
-.room-functions button {
+.alert {
+
+}
+
+.action-btn {
   background-color: #bc672c;
   border-radius: 5em;
+  margin: 0.5em;
   width: 10em;
   height: 2em;
   color: #fffaf7;
@@ -357,8 +363,13 @@ p {
   transition: background-color 1s ease-out;
 }
 
-.room-functions button:hover {
-  color: #f2dcc5;
+.action-btn:disabled{
+  background: #666;
+  color: #BBB;
+}
+
+.action-btn:hover {
+  background-color:#5b3b25;
 }
 
 #room-input {

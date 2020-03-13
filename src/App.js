@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faBars, faSearch, faStepForward, faPlay, faSpinner} from '@fortawesome/free-solid-svg-icons'
-import {Switch, Route, Link, Redirect} from 'react-router-dom'
+import {Switch, Route, Link} from 'react-router-dom'
 import firebase from 'firebase/app'
 
 const API_KEY = "AIzaSyCwlrxe-0OpRgnkt31ng6LXGRGbTnX0Vb4";
@@ -43,7 +43,7 @@ class Login extends Component {
     event.preventDefault(); //don't submit
 
     this.props.signUpCallback(this.state.email, this.state.password);
-
+    this.props.history.push("/")
   }
   //update state for specific field
   handleChange = (event) => {
@@ -99,9 +99,9 @@ class App extends Component {
 
     this.setState({errorMessage: null}); //clear any old errors
 
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
-      var user = firebase.auth().currentUser;
-    }).catch((error) => this.setState({errorMessage: error.message}));
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(() =>
+      firebase.auth().currentUser
+    ).catch((error) => this.setState({errorMessage: error.message}));
   }
 
   //Sign in with firebase
@@ -166,7 +166,7 @@ class App extends Component {
     newProps.dequeue = this.dequeue;
     newProps.enqueue = this.enqueue;
     newProps.songQueue = this.state.queue;
-    newProps.signedIn = !(this.state.user == undefined);
+    newProps.signedIn = !(this.state.user === undefined);
     newProps.user = this.state.user;
     return (<Main {...newProps}/>)
   }
@@ -183,16 +183,16 @@ class App extends Component {
     if (this.state.loading) {
       return (<div className="center">
         <div className="centerChild">
-          <FontAwesomeIcon spin="spin" icon={faSpinner} size="5x"/>
+          <FontAwesomeIcon spin icon={faSpinner} size="5x"/>
         </div>
       </div>)
     } else {
       return (<div>
-        <Header signOutCallback={this.handleSignOut} signedIn={!(this.state.user == undefined)} displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
+        <Header signOutCallback={this.handleSignOut} signedIn={!(this.state.user === undefined)} displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
         <Switch>
-          <Route exact="exact" path="/" render={this.renderMain}/>
-          <Route exact="exact" path="/about" component={About}/>
-          <Route exact="exact" path="/login" render={this.renderLogin}/>
+          <Route exact path="/" render={this.renderMain}/>
+          <Route exact path="/about" component={About}/>
+          <Route exact path="/login" render={this.renderLogin}/>
           <Route path="/:roomCode" render={this.renderMain}></Route>
         </Switch>
         <Footer/>
@@ -252,13 +252,14 @@ class Main extends Component {
 
   componentDidUpdate(prevProps) {
 
-    if (this.state.room != this.props.match.params.roomCode) {
+    if (this.state.room !== this.props.match.params.roomCode) {
       this.setState({room: this.props.match.params.roomCode});
     }
 
   }
   componentWillUnmount() {
-    this.queueRef.off();
+    if(this.state.roomRef !== undefined)
+      {this.state.roomRef.off();}
   }
   componentDidMount() {
     //let roomCode = "dummyValue";
@@ -267,17 +268,15 @@ class Main extends Component {
 
     //Need the timeout to prevent async
     setTimeout(() => {
-      if (this.state.room != undefined) {
+      if (this.state.room !== undefined) {
 
         this.setState({roomRef: firebase.database().ref("rooms")});
         this.state.roomRef.once("value").then((snapshot) => {
           //Get room Firebase ID
           let obj = snapshot.val();
-          let new_roomID = Object.keys(obj).filter((el) => obj[el].roomCode == this.state.room)[0]
+          let new_roomID = Object.keys(obj).filter((el) => obj[el].roomCode === this.state.room)[0]
           this.setState({roomID: new_roomID});
-          console.log('state');
-          console.log(this.state.roomRef)
-          console.log(this.state.roomID);
+
         });
 
       }
@@ -332,7 +331,7 @@ class SearchForm extends Component {
           id: item.id.videoId
         }
 
-        if (song.id != undefined) {
+        if (song.id !== undefined) {
           songList.push(song);
 
         }
@@ -366,7 +365,7 @@ class SearchCard extends Component {
       <p className="song-length">{JSON.stringify(song)}</p>
 
       <div className="song-art">
-        <img src={song.cover}/>
+        <img alt="" src={song.cover}/>
       </div>
     </div>);
   }
@@ -383,7 +382,7 @@ class QueueCard extends Component {
       <p className="song-length">{JSON.stringify(song)}</p>
 
       <div className="song-art">
-        <img src={song.cover}/>
+        <img alt="" src={song.cover}/>
       </div>
     </div>);
   }
@@ -398,9 +397,9 @@ class MediaControls extends Component {
           event.preventDefault();
 
           let playerState = player.current.player.getPlayerState();
-          if (playerState == 1) {
+          if (playerState === 1) {
             player.current.player.pauseVideo();
-          } else if (playerState == 2) {
+          } else if (playerState === 2) {
             player.current.player.playVideo();
           }
         }}>
@@ -443,12 +442,11 @@ class Dashboard extends Component {
 
   addToQueue = (song) => {
 
-    if (this.props.songQueue == 0) {
+    if (this.props.songQueue === 0) {
       this.showPlayer()
     }
     //If the user is in a room
-    console.log(this.props.room)
-    if (this.props.room != undefined) {
+    if (this.props.room !== undefined) {
       //Add the song to the queue
 
       this.props.roomRef.child(this.props.roomID + "/queue").push(song);
@@ -456,7 +454,6 @@ class Dashboard extends Component {
     this.player.current.player.loadVideoById(song.id);
 
     this.props.enqueue(song)
-    console.log("end add")
   }
 
   createRoom = () => {
@@ -466,7 +463,6 @@ class Dashboard extends Component {
       host: this.props.user.uid,
       queue: {}
     }
-    console.log(obj);
     firebase.database().ref("rooms").push(obj).catch((error) => console.log(error));
     this.props.history.push("/" + code);
 
@@ -540,7 +536,7 @@ class YouTube extends Component {
         events: {
           onReady: this.onPlayerReady,
           onStateChange: (event) => {
-            if (event.data == YT.PlayerState.ENDED) {
+            if (event.data === YT.PlayerState.ENDED) {
               // console.log(this.props.songQueue.length);
               this.props.dequeue(this.props.songQueue[0]);
               // 1(this.props.songQueue[0]);
@@ -579,17 +575,20 @@ class Queue extends Component {
   componentDidMount() {
     setTimeout(() => {
 
-      console.log("Queue");
-      console.log(this.props.roomRef)
-      this.props.roomRef.child(this.props.roomID).on('value', (snapshot) => {
-        console.log(Object.values(snapshot.val().queue));
-        this.setState({queue: Object.values(snapshot.val().queue)});
-      })
+      if(this.props.roomID !== undefined)
+      {
+        this.props.roomRef.child(this.props.roomID).on('value', (snapshot) => {
+        let queueObj = snapshot.val().queue
+        if(queueObj !== undefined)
+        {this.setState({
+          queue: Object.values(snapshot.val().queue)
+        });}
+      })}
     }, 1000)
   }
   componentDidUpdate(prevProps) {}
   render() {
-    console.log(this.state)
+
     return (<div className="queue">
       <div className="queue-header">Queue</div>
       <div className="card-container">

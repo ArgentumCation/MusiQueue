@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faBars, faSearch, faStepForward, faPlay} from '@fortawesome/free-solid-svg-icons'
+import {faBars, faSearch, faStepForward, faPlay, faSpinner} from '@fortawesome/free-solid-svg-icons'
 import {Switch, Route, Link, Redirect} from 'react-router-dom'
 import firebase from 'firebase/app'
 
@@ -104,20 +104,17 @@ class App extends Component {
     }).catch((error) => this.setState({errorMessage: error.message}));
   }
 
-  //Sign up with firebase
+  //Sign in with firebase
   handleSignIn = (email, password) => {
     this.setState({errorMessage: null}); //clear any old errors
-
-    /* TODO: sign in user here */
     firebase.auth().signInWithEmailAndPassword(email, password).then().catch((error) => this.setState({errorMessage: error.message}));
   }
 
-  //TODO: test
+  //Sign Out
   handleSignOut = () => {
     this.setState({errorMessage: null}); //clear any old errors
+    firebase.auth().signOut().then(this.setState({errorMessage: "Signed Out Successfully"})).catch((error) => this.setState({errorMessage: error.message}));
 
-    /* TODO: sign out user here */
-    firebase.auth().signOut();
   }
 
   constructor() {
@@ -128,7 +125,8 @@ class App extends Component {
     this.state = {
       desktopMode: mql.matches,
       displayMenu: mql.matches,
-      queue: []
+      queue: [],
+      loading: true
     }
   }
 
@@ -168,11 +166,8 @@ class App extends Component {
     newProps.dequeue = this.dequeue;
     newProps.enqueue = this.enqueue;
     newProps.songQueue = this.state.queue;
-    console.log("rendering Main");
-    console.log(this.state.user)
     newProps.signedIn = !(this.state.user == undefined);
-    console.log("RenderMain:");
-    console.log(newProps.signedIn)
+    newProps.user = this.state.user;
     return (<Main {...newProps}/>)
   }
 
@@ -185,16 +180,24 @@ class App extends Component {
 
   render() {
 
-    return (<div>
-      <Header displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
-      <Switch>
-        <Route exact="exact" path="/" render={this.renderMain}/>
-        <Route exact="exact" path="/about" component={About}/>
-        <Route exact="exact" path="/login" render={this.renderLogin}/>
-        <Route path="/:roomCode" render={this.renderMain}></Route>
-      </Switch>
-      <Footer/>
-    </div>);
+    if (this.state.loading) {
+      return (<div className="center">
+        <div className="centerChild">
+          <FontAwesomeIcon spin="spin" icon={faSpinner} size="5x"/>
+        </div>
+      </div>)
+    } else {
+      return (<div>
+        <Header signOutCallback={this.handleSignOut} signedIn={!(this.state.user == undefined)} displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
+        <Switch>
+          <Route exact="exact" path="/" render={this.renderMain}/>
+          <Route exact="exact" path="/about" component={About}/>
+          <Route exact="exact" path="/login" render={this.renderLogin}/>
+          <Route path="/:roomCode" render={this.renderMain}></Route>
+        </Switch>
+        <Footer/>
+      </div>);
+    }
   }
 }
 
@@ -214,12 +217,13 @@ class Header extends Component {
               }, {
                 dest: "https://github.com/info340b-wi20/project-ajayk111",
                 text: "GitHub"
-              }, {
-                dest: "/login",
-                text: "Log In"
               }
             ].map((el) => <MenuItem key={el.text} displayMenu={this.props.displayMenu} dest={el.dest} text={el.text}/>)
+
           }
+          <MenuItem onClick={this.props.signOutCallback} key={"login"} displayMenu={this.props.displayMenu} dest={"/login"} text={this.props.signedIn
+              ? "Log Out"
+              : "Log In"}/>
           <Toggle menuCallback={this.props.menuCallback}/>
         </ul>
       </nav>
@@ -253,27 +257,39 @@ class Main extends Component {
     }
 
   }
+  componentWillUnmount() {
+    this.queueRef.off();
+  }
   componentDidMount() {
     //let roomCode = "dummyValue";
     let roomCode = this.props.match.params.roomCode;
     this.setState({room: roomCode});
 
+    //Need the timeout to prevent async
+    setTimeout(() => {
+      if (this.state.room != undefined) {
+
+        this.setState({roomRef: firebase.database().ref("rooms")});
+        this.state.roomRef.once("value").then((snapshot) => {
+          //Get room Firebase ID
+          let obj = snapshot.val();
+          let new_roomID = Object.keys(obj).filter((el) => obj[el].roomCode == this.state.room)[0]
+          this.setState({roomID: new_roomID});
+          console.log('state');
+          console.log(this.state.roomRef)
+          console.log(this.state.roomID);
+        });
+
+      }
+    }, 50)
+
   }
   render() {
 
     return (<main>
-      <Dashboard signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.props.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
-      <Queue dequeue={this.props.dequeue} songQueue={this.props.songQueue}/>
+      <Dashboard roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.props.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
+      <Queue roomRef={this.state.roomRef} roomID={this.state.roomID} dequeue={this.props.dequeue} songQueue={this.props.songQueue}/>
     </main>);
-  }
-}
-
-class Instructions extends Component {
-  render() {
-    return (<p>
-      <strong>Instructions:&nbsp;
-      </strong>
-      Select "Join room" if somebody is already hosting a listening session. Otherwise, click "Create room" to begin a session. Then, search for a song below and click to add it to the queue. Click on a song in the queue to remove it</p>);
   }
 }
 
@@ -344,7 +360,7 @@ class SearchCard extends Component {
   render() {
     let song = this.props.song;
     let addToQueue = this.props.enqueueCallback;
-    return (<div tabindex="0" role="button" className="card" onClick={() => addToQueue(song)}>
+    return (<div tabIndex="0" role="button" className="card" onClick={() => addToQueue(song)}>
       <p className="song-title">{song.title}</p>
       <p className="song-artist">{song.artist}</p>
       <p className="song-length">{JSON.stringify(song)}</p>
@@ -360,7 +376,7 @@ class QueueCard extends Component {
   render() {
     let song = this.props.song;
     let removeFromQueue = this.props.dequeueCallback;
-    return (<div className="card" tabindex="0" role="button">
+    return (<div className="card" tabIndex="0" role="button">
       <button className="close-button" aria-label="Close Account Info Modal Box" onClick={() => removeFromQueue(song)}>&times;</button>
       <p className="song-title">{song.title}</p>
       <p className="song-artist">{song.artist}</p>
@@ -426,19 +442,32 @@ class Dashboard extends Component {
   }
 
   addToQueue = (song) => {
+
     if (this.props.songQueue == 0) {
       this.showPlayer()
-
-      this.player.current.player.loadVideoById(song.id);
-
     }
-    this.props.enqueue(song)
+    //If the user is in a room
+    console.log(this.props.room)
+    if (this.props.room != undefined) {
+      //Add the song to the queue
 
+      this.props.roomRef.child(this.props.roomID + "/queue").push(song);
+    }
+    this.player.current.player.loadVideoById(song.id);
+
+    this.props.enqueue(song)
+    console.log("end add")
   }
 
   createRoom = () => {
     let code = Math.random().toString(36).substring(2, 6);
-
+    let obj = {
+      roomCode: code,
+      host: this.props.user.uid,
+      queue: {}
+    }
+    console.log(obj);
+    firebase.database().ref("rooms").push(obj).catch((error) => console.log(error));
     this.props.history.push("/" + code);
 
   }
@@ -446,7 +475,10 @@ class Dashboard extends Component {
 
     return (<div className="dashboard">
       <RoomCodeDisplay code={this.props.room}/>
-      <Instructions/>
+      <p>
+        <strong>Instructions:&nbsp;
+        </strong>
+        Select "Join room" if somebody is already hosting a listening session. Otherwise, click "Create room" to begin a session. Then, search for a song below and click to add it to the queue. Click on a song in the queue to remove it</p>
       <div className="room-functions">
 
         <button disabled={!this.props.signedIn} type="button" id="join-room" className="action-btn">Join room</button>
@@ -485,13 +517,13 @@ class SearchResults extends Component {
   }
 }
 
-let loadYT;
 class YouTube extends Component {
   constructor(props) {
     super(props);
     this.player = {};
   }
   componentDidMount() {
+    let loadYT;
     if (!loadYT) {
       loadYT = new Promise((resolve) => {
         const tag = document.createElement('script')
@@ -540,12 +572,28 @@ class Queue extends Component {
   removeFromQueue = (song) => {
     this.props.dequeue(song)
   }
+  constructor(props){
+    super(props)
+    this.state = {queue: []};
+  }
+  componentDidMount() {
+    setTimeout(() => {
+
+      console.log("Queue");
+      console.log(this.props.roomRef)
+      this.props.roomRef.child(this.props.roomID).on('value', (snapshot) => {
+        console.log(Object.values(snapshot.val().queue));
+        this.setState({queue: Object.values(snapshot.val().queue)});
+      })
+    }, 1000)
+  }
   componentDidUpdate(prevProps) {}
   render() {
+    console.log(this.state)
     return (<div className="queue">
       <div className="queue-header">Queue</div>
       <div className="card-container">
-        {this.props.songQueue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el}/>)}
+        {this.state.queue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el}/>)}
       </div>
     </div>);
   }
@@ -563,7 +611,7 @@ class MenuItem extends Component {
           display: dispayString
         }}>
 
-        <Link to={dest}>{text}</Link>
+        <Link to={dest} onClick={this.props.onClick}>{text}</Link>
       </li>)
     } else {
       return (<li className="item" style={{
@@ -580,7 +628,7 @@ class MenuItem extends Component {
 class Toggle extends Component {
   render() {
     return (<li className="toggle" onClick={this.props.menuCallback}>
-      <button>
+      <button className="toggle">
         <FontAwesomeIcon icon={faBars}/>
 
       </button>

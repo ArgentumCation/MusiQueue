@@ -203,7 +203,6 @@ class MenuItem extends Component {
   }
 }
 
-
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -675,14 +674,28 @@ class Login extends Component {
   }
   render() {
     return <main className="about">
+    <div className="login">
       <form>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" onChange={this.handleChange}/>
-        <label htmlFor="password">Password</label>
-        <input id="password" type="password" name="password" onChange={this.handleChange}/>
-        <button className="action-btn" onClick={this.handleSignUp}>Sign-up</button>
-        <button className="action-btn" onClick={this.handleSignIn}>Sign-in</button>
+        <table>
+          <tr>
+            <td>
+              <label htmlFor="email">Email</label>
+            </td>
+            <td><input id="email" type="email" name="email" onChange={this.handleChange}/></td>
+          </tr>
+          <tr>
+            <td>
+              <label htmlFor="password">Password</label>
+            </td>
+            <td><input id="password" type="password" name="password" onChange={this.handleChange}/></td>
+          </tr>
+        </table>
+        <div>
+          <button className="action-btn" onClick={this.handleSignUp}>Sign-up</button>
+          <button className="action-btn" onClick={this.handleSignIn}>Sign-in</button>
+        </div>
       </form>
+      </div>
     </main>
   }
 }

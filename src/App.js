@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faBars, faSearch, faStepForward, faPlay, faSpinner} from '@fortawesome/free-solid-svg-icons'
+import {faSignInAlt, faBars, faSearch, faStepForward, faPlay, faSpinner} from '@fortawesome/free-solid-svg-icons'
 import {Switch, Route, Link} from 'react-router-dom'
 import firebase from 'firebase/app'
 
@@ -99,9 +99,7 @@ class App extends Component {
 
     this.setState({errorMessage: null}); //clear any old errors
 
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(() =>
-      firebase.auth().currentUser
-    ).catch((error) => this.setState({errorMessage: error.message}));
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(() => firebase.auth().currentUser).catch((error) => this.setState({errorMessage: error.message}));
   }
 
   //Sign in with firebase
@@ -183,7 +181,7 @@ class App extends Component {
     if (this.state.loading) {
       return (<div className="center">
         <div className="centerChild">
-          <FontAwesomeIcon spin icon={faSpinner} size="5x"/>
+          <FontAwesomeIcon spin="spin" icon={faSpinner} size="5x"/>
         </div>
       </div>)
     } else {
@@ -258,8 +256,9 @@ class Main extends Component {
 
   }
   componentWillUnmount() {
-    if(this.state.roomRef !== undefined)
-      {this.state.roomRef.off();}
+    if (this.state.roomRef !== undefined) {
+      this.state.roomRef.off();
+    }
   }
   componentDidMount() {
     //let roomCode = "dummyValue";
@@ -428,7 +427,8 @@ class Dashboard extends Component {
     this.player = React.createRef();
     this.state = {
       searchResults: [],
-      playerVisible: false
+      playerVisible: false,
+      showRoomInput: false
     }
   }
 
@@ -467,6 +467,10 @@ class Dashboard extends Component {
     this.props.history.push("/" + code);
 
   }
+  //Stores the value in the searchbox
+  handleChange = (event) => {
+    this.setState({roomToJoin: event.target.value});
+  }
   render() {
 
     return (<div className="dashboard">
@@ -475,12 +479,30 @@ class Dashboard extends Component {
         <strong>Instructions:&nbsp;
         </strong>
         Select "Join room" if somebody is already hosting a listening session. Otherwise, click "Create room" to begin a session. Then, search for a song below and click to add it to the queue. Click on a song in the queue to remove it</p>
-      <div className="room-functions">
+      <div>
+        <div className="room-functions">
+          <button disabled={!this.props.signedIn} type="button" id="join-room" className="action-btn" onClick={() => this.setState({showRoomInput: true})}>Join room</button>
+          <button type="button" disabled={!this.props.signedIn} id="create-room" onClick={this.createRoom} className="action-btn">Create room</button>
+        </div>
+<form>
+        <div style={{
+            display: this.state.showRoomInput
+              ? 'flex'
+              : 'none'
+          }} className="join-room-box">
 
-        <button disabled={!this.props.signedIn} type="button" id="join-room" className="action-btn">Join room</button>
-        <button type="button" disabled={!this.props.signedIn} id="create-room" onClick={this.createRoom} className="action-btn">Create room</button>
+          <button aria-label="search" id="search-button" onClick={() => {
+            this.props.history.push("/"+this.state.roomToJoin);
+            this.setState({showRoomInput: false})
+          }}>
+            <FontAwesomeIcon icon={faSignInAlt}/>
+          </button>
+          <label htmlFor="joinhbar"></label>
+          <input type="text" onChange={this.handleChange} placeholder="Enter room code" name="joinbar" id="joinbar"></input>
+
+        </div>
+</form>
       </div>
-      <input type="text" id="room-input" placeholder="Enter room code"/>
 
       <SearchForm searchCallback={this.updateSearchResults}/>
 
@@ -568,22 +590,25 @@ class Queue extends Component {
   removeFromQueue = (song) => {
     this.props.dequeue(song)
   }
-  constructor(props){
+  constructor(props) {
     super(props)
-    this.state = {queue: []};
+    this.state = {
+      queue: []
+    };
   }
   componentDidMount() {
     setTimeout(() => {
 
-      if(this.props.roomID !== undefined)
-      {
+      if (this.props.roomID !== undefined) {
         this.props.roomRef.child(this.props.roomID).on('value', (snapshot) => {
-        let queueObj = snapshot.val().queue
-        if(queueObj !== undefined)
-        {this.setState({
-          queue: Object.values(snapshot.val().queue)
-        });}
-      })}
+          let queueObj = snapshot.val().queue
+          if (queueObj !== undefined) {
+            this.setState({
+              queue: Object.values(snapshot.val().queue)
+            });
+          }
+        })
+      }
     }, 1000)
   }
   componentDidUpdate(prevProps) {}

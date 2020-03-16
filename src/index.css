@@ -235,7 +235,7 @@ button {
 
 .dashboard h2 {
   text-align: center;
-  font-size: 12vw;
+  font-size: 16vmin;
   flex: 1 0 auto;
   box-shadow: -4px 3px 8px #d6d6d685;
   margin: auto;
@@ -372,10 +372,41 @@ p {
   margin: 0.5rem;
 }
 
+#join-room {
+  margin-left: auto;
+}
+
+#create-room {
+  margin-right: auto;
+}
+
+.join-room-box {
+  display: flex;
+  height: 1.5em;
+  margin: 1em 0 1em 0;
+  padding: 0em 0 2em 0;
+}
+
+.join-room-box button {
+  width: 2.5em;
+border: 0;
+border-radius: 20px 0 0 20px;
+height: 2.5em;
+}
+
+.join-room-box input {
+  width: 100%;
+    border: none;
+    border-radius: 0 20px 20px 0;
+    padding-left: 0.5em;
+    height: 2.5em;
+}
 .room-functions {
   display: flex;
   flex-direction: row;
 }
+
+
 
 .action-btn {
   background-color: #bc672c;
@@ -383,6 +414,7 @@ p {
   margin: 0.5em;
   width: 10em;
   height: 2.5em;
+  /* margin-bottom: 1em; */
   color: #fffaf7;
   transition: background-color 1s ease-out;
   font-weight: bold;
@@ -397,9 +429,7 @@ p {
   background-color: #5b3b25;
 }
 
-#room-input {
-  display: none;
-}
+
 
 /* desktop*/
 @media screen and (min-width:468px) {

@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faSignInAlt, faBars, faSearch, faStepForward, faPlay, faSpinner} from '@fortawesome/free-solid-svg-icons'
+import {
+  faSignInAlt,
+  faBars,
+  faSearch,
+  faStepForward,
+  faPlay,
+  faSpinner
+} from '@fortawesome/free-solid-svg-icons'
 import {Switch, Route, Link} from 'react-router-dom'
 import firebase from 'firebase/app'
 
@@ -111,7 +118,7 @@ class App extends Component {
     if (this.state.loading) {
       return (<div className="center">
         <div className="centerChild">
-          <FontAwesomeIcon spin="spin" icon={faSpinner} size="5x"/>
+          <FontAwesomeIcon spin icon={faSpinner} size="5x"/>
         </div>
       </div>)
     } else {
@@ -250,11 +257,25 @@ class Main extends Component {
     }, 50)
 
   }
+
+  dequeue = (song) => {
+
+
+    this.props.dequeue(song);
+
+    if (this.state.room !== undefined) {
+
+      //this.state.roomRef.child(this.state.roomID + "/queue").set(null);
+      this.state.roomRef.child(this.state.roomID + "/queue").set(this.props.songQueue);
+
+    }
+
+  }
   render() {
 
     return (<main>
-      <Dashboard roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.props.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
-      <Queue roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.props.dequeue} songQueue={this.props.songQueue}/>
+      <Dashboard roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
+      <Queue roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.dequeue} songQueue={this.props.songQueue}/>
     </main>);
   }
 }
@@ -278,32 +299,35 @@ class Dashboard extends Component {
     this.setState({searchResults: songs})
   }
 
-  componentDidMount(){
+  componentDidMount() {
     //if there's a already a song in the queue play it
     setTimeout(() => {
-    if(this.props.songQueue.length > 0){
-      console.log("dashmount");
-      console.log(this.props.songQueue);
-      this.player.current.player.loadVideoById(this.props.songQueue[0].id);
-      this.showPlayer();
-    }} ,2500)
+      if (this.props.songQueue.length > 0) {
+
+        this.player.current.player.loadVideoById(this.props.songQueue[0].id);
+        this.showPlayer();
+      }
+    }, 1500)
   }
 
   addToQueue = (song) => {
-    console.log(this.props.songQueue)
-    if (this.props.songQueue.length >= 0) {
-      this.showPlayer()
-    }
+
+
     //If the user is in a room
     if (this.props.room !== undefined) {
       //Add the song to the queue
 
       this.props.roomRef.child(this.props.roomID + "/queue").push(song);
+
     }
+
     this.props.enqueue(song);
-    this.player.current.player.loadVideoById(song.id);
 
+    if (this.props.songQueue.length === 0) {
 
+      this.player.current.player.loadVideoById(song.id);
+    }
+    this.showPlayer()
   }
 
   //creates a roomcode, then adds to firebase and joins it
@@ -316,7 +340,8 @@ class Dashboard extends Component {
     }
     firebase.database().ref("rooms").push(obj).catch((error) => console.log(error));
     this.props.history.push("/" + code);
-    console.log(this.props.songQueue);
+
+
 
   }
   //Stores the value in the searchbox
@@ -336,24 +361,24 @@ class Dashboard extends Component {
           <button disabled={!this.props.signedIn} type="button" id="join-room" className="action-btn" onClick={() => this.setState({showRoomInput: true})}>Join room</button>
           <button type="button" disabled={!this.props.signedIn} id="create-room" onClick={this.createRoom} className="action-btn">Create room</button>
         </div>
-<form>
-        <div style={{
-            display: this.state.showRoomInput
-              ? 'flex'
-              : 'none'
-          }} className="join-room-box">
+        <form>
+          <div style={{
+              display: this.state.showRoomInput
+                ? 'flex'
+                : 'none'
+            }} className="join-room-box">
 
-          <button aria-label="search" id="search-button" onClick={() => {
-            this.props.history.push("/"+this.state.roomToJoin);
-            this.setState({showRoomInput: false})
-          }}>
-            <FontAwesomeIcon icon={faSignInAlt}/>
-          </button>
-          <label htmlFor="joinhbar"></label>
-          <input type="text" onChange={this.handleChange} placeholder="Enter room code" name="joinbar" id="joinbar"></input>
+            <button aria-label="search" id="search-button" onClick={() => {
+                this.props.history.push("/" + this.state.roomToJoin);
+                this.setState({showRoomInput: false})
+              }}>
+              <FontAwesomeIcon icon={faSignInAlt}/>
+            </button>
+            <label htmlFor="joinhbar"></label>
+            <input type="text" onChange={this.handleChange} placeholder="Enter room code" name="joinbar" id="joinbar"></input>
 
-        </div>
-</form>
+          </div>
+        </form>
       </div>
 
       <SearchForm searchCallback={this.updateSearchResults}/>
@@ -458,7 +483,7 @@ class YouTube extends Component {
           onReady: this.onPlayerReady,
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.ENDED) {
-              // console.log(this.props.songQueue.length);
+
               this.props.dequeue(this.props.songQueue[0]);
               // 1(this.props.songQueue[0]);
               if (this.props.songQueue.length > 0) {
@@ -553,6 +578,9 @@ class Queue extends Component {
   }
   constructor(props) {
     super(props)
+    this.state = {
+      loading: true
+    }
   }
   //On mount if we're in a room, add cloud songs to queue
   componentDidMount() {
@@ -562,14 +590,19 @@ class Queue extends Component {
         this.props.roomRef.child(this.props.roomID).on('value', (snapshot) => {
           let queueObj = snapshot.val().queue
           if (queueObj !== undefined) {
-            let cloudSongs =  Object.values(snapshot.val().queue);
-            for(let song of cloudSongs){
-              this.addToQueue(song)
+            if (this.state.loading) {
+              let cloudSongs = Object.values(snapshot.val().queue);
+
+              for (let song of cloudSongs) {
+                this.addToQueue(song)
+              }
+              this.setState({loading:false})
             }
 
-          }})
           }
-    }, 1000)
+        })
+      }
+    }, 500)
   }
   componentDidUpdate(prevProps) {}
   render() {

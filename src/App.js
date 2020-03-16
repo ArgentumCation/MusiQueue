@@ -118,16 +118,16 @@ class App extends Component {
     if (this.state.loading) {
       return (<div className="center">
         <div className="centerChild">
-          <FontAwesomeIcon spin icon={faSpinner} size="5x"/>
+          <FontAwesomeIcon spin="spin" icon={faSpinner} size="5x"/>
         </div>
       </div>)
     } else {
       return (<div>
         <Header signOutCallback={this.handleSignOut} signedIn={!(this.state.user === undefined)} displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
         <Switch>
-          <Route exact path="/" render={this.renderMain}/>
-          <Route exact path="/about" component={About}/>
-          <Route exact path="/login" render={this.renderLogin}/>
+          <Route exact="exact" path="/" render={this.renderMain}/>
+          <Route exact="exact" path="/about" component={About}/>
+          <Route exact="exact" path="/login" render={this.renderLogin}/>
           <Route path="/:roomCode" render={this.renderMain}></Route>
         </Switch>
         <Footer/>
@@ -138,7 +138,8 @@ class App extends Component {
 
 class Header extends Component {
   render() {
-    let menuOptions = [{
+    let menuOptions = [
+      {
         dest: "/",
         text: "Home"
       }, {
@@ -147,36 +148,32 @@ class Header extends Component {
       }, {
         dest: "https://github.com/info340b-wi20/project-ajayk111",
         text: "GitHub"
-      }].map((el) => <MenuItem key={el.text} displayMenu={this.props.displayMenu} dest={el.dest} text={el.text}/>)
+      }
+    ].map((el) => <MenuItem key={el.text} displayMenu={this.props.displayMenu} dest={el.dest} text={el.text}/>)
     return (<header>
 
       <nav>
         <ul className="menu">
-        <li className="logo">
-          <h1>
-            <a href="index.html">MusiQueue</a>
-          </h1>
-        </li>
+          <li className="logo">
+            <h1>
+              <a href="index.html">MusiQueue</a>
+            </h1>
+          </li>
           {menuOptions}
           <MenuItem onClick={this.props.signOutCallback} key={"login"} displayMenu={this.props.displayMenu} dest={"/login"} text={this.props.signedIn
               ? "Log Out"
               : "Log In"}/>
-          <Toggle menuCallback={this.props.menuCallback}/>
+          <li className="toggle" onClick={this.props.menuCallback}>
+            <button className="toggle">
+              <FontAwesomeIcon icon={faBars}/>
+
+            </button>
+          </li>
         </ul>
       </nav>
     </header>);
   }
 
-}
-
-class Logo extends Component {
-  render() {
-    return (<li className="logo">
-      <h1>
-        <a href="index.html">MusiQueue</a>
-      </h1>
-    </li>);
-  }
 }
 
 class MenuItem extends Component {
@@ -206,16 +203,6 @@ class MenuItem extends Component {
   }
 }
 
-class Toggle extends Component {
-  render() {
-    return (<li className="toggle" onClick={this.props.menuCallback}>
-      <button className="toggle">
-        <FontAwesomeIcon icon={faBars}/>
-
-      </button>
-    </li>);
-  }
-}
 
 class Main extends Component {
   constructor(props) {
@@ -261,7 +248,6 @@ class Main extends Component {
   }
 
   dequeue = (song) => {
-
 
     this.props.dequeue(song);
 
@@ -314,7 +300,6 @@ class Dashboard extends Component {
 
   addToQueue = (song) => {
 
-
     //If the user is in a room
     if (this.props.room !== undefined) {
       //Add the song to the queue
@@ -342,8 +327,6 @@ class Dashboard extends Component {
     }
     firebase.database().ref("rooms").push(obj).catch((error) => console.log(error));
     this.props.history.push("/" + code);
-
-
 
   }
   //Stores the value in the searchbox
@@ -597,7 +580,7 @@ class Queue extends Component {
               for (let song of cloudSongs) {
                 this.addToQueue(song)
               }
-              this.setState({loading:false})
+              this.setState({loading: false})
             }
 
           }

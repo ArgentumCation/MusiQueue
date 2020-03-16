@@ -138,24 +138,26 @@ class App extends Component {
 
 class Header extends Component {
   render() {
+    let menuOptions = [{
+        dest: "/",
+        text: "Home"
+      }, {
+        dest: "/about",
+        text: "About"
+      }, {
+        dest: "https://github.com/info340b-wi20/project-ajayk111",
+        text: "GitHub"
+      }].map((el) => <MenuItem key={el.text} displayMenu={this.props.displayMenu} dest={el.dest} text={el.text}/>)
     return (<header>
+
       <nav>
         <ul className="menu">
-          <Logo/> {
-            [
-              {
-                dest: "/",
-                text: "Home"
-              }, {
-                dest: "/about",
-                text: "About"
-              }, {
-                dest: "https://github.com/info340b-wi20/project-ajayk111",
-                text: "GitHub"
-              }
-            ].map((el) => <MenuItem key={el.text} displayMenu={this.props.displayMenu} dest={el.dest} text={el.text}/>)
-
-          }
+        <li className="logo">
+          <h1>
+            <a href="index.html">MusiQueue</a>
+          </h1>
+        </li>
+          {menuOptions}
           <MenuItem onClick={this.props.signOutCallback} key={"login"} displayMenu={this.props.displayMenu} dest={"/login"} text={this.props.signedIn
               ? "Log Out"
               : "Log In"}/>
@@ -541,13 +543,12 @@ class SearchResults extends Component {
 
   render() {
     let addToQueue = this.props.enqueueCallback;
+    let searchResults = (this.props.songList)
+      ? this.props.songList.map((el) => <SearchCard enqueueCallback={addToQueue} key={el.id} song={el}/>)
+      : ' ';
     return (<div className="search-results">
       <div className="card-container">
-        {
-          (this.props.songList)
-            ? this.props.songList.map((el) => <SearchCard enqueueCallback={addToQueue} key={el.id} song={el}/>)
-            : ' '
-        }
+        {searchResults}
       </div>
     </div>);
   }
@@ -606,11 +607,11 @@ class Queue extends Component {
   }
   componentDidUpdate(prevProps) {}
   render() {
-
+    let queueCards = this.props.songQueue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el}/>);
     return (<div className="queue">
       <div className="queue-header">Queue</div>
       <div className="card-container">
-        {this.props.songQueue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el}/>)}
+        {queueCards}
       </div>
     </div>);
   }

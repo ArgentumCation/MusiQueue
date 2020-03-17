@@ -623,24 +623,15 @@ class Queue extends Component {
 
           let queueObj = snapshot.val().queue
           if (queueObj !== undefined) {
-            if (this.state.loading) {
-              //console.log("loading")
+            //if (this.state.loading) {
               let cloudSongs = Object.values(snapshot.val().queue);
               this.props.clearQueue(cloudSongs);
-              //console.log(this.props.dash.getCurrentlyPlaying())
-              //console.log( cloudSongs[0].id)
+
               if(this.props.dash.getCurrentlyPlaying() !== cloudSongs[0].id){
                 this.props.dash.loadSong(cloudSongs[0].id);
               }
-              // //console.log(this.props.songQueue);
-              // for (let song of cloudSongs) {
-              //   this.addToQueue(song)
-              //   //console.log("Adding")
-              //   //console.log(song)
-              //   //console.log(this.props.songQueue)
-              //}
-              setTimeout(this.setState({loading: false}), 1500)
-            }
+              //setTimeout(this.setState({loading: false}), 1500)
+            //}
 
           }
           this.setState({loading: true})

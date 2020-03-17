@@ -72,7 +72,8 @@ class App extends Component {
       } else {
         this.setState({user: null});
       }
-      this.setState({loading: false});
+      setTimeout(
+      this.setState({loading: false}),10000);
     });
     this.setState({authUnRegFunc: unregFunc});
 
@@ -574,6 +575,7 @@ class Queue extends Component {
 
       if (this.props.roomID !== undefined) {
         this.props.roomRef.child(this.props.roomID).on('value', (snapshot) => {
+          console.log("triggered")
           let queueObj = snapshot.val().queue
           if (queueObj !== undefined) {
             if (this.state.loading) {
@@ -587,6 +589,7 @@ class Queue extends Component {
             }
 
           }
+          this.setState({loading:true})
         })
       }
     }, 500)

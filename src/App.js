@@ -294,12 +294,13 @@ class Dashboard extends Component {
         this.player.current.player.loadVideoById(this.props.songQueue[0].id);
         this.showPlayer();
       }
-    }, 1500)
+    }, 2500)
   }
 
   addToQueue = (song) => {
 
     //If the user is in a room
+
     if (this.props.room !== undefined) {
       //Add the song to the queue
 
@@ -307,12 +308,14 @@ class Dashboard extends Component {
 
     }
 
-    this.props.enqueue(song);
 
+    console.log(this.player.current.player)
     if (this.props.songQueue.length === 0) {
-
+      console.log(this.player.current.player)
       this.player.current.player.loadVideoById(song.id);
     }
+    this.props.enqueue(song);
+
     this.showPlayer()
   }
 
@@ -579,7 +582,8 @@ class Queue extends Component {
               for (let song of cloudSongs) {
                 this.addToQueue(song)
               }
-              this.setState({loading: false})
+              setTimeout(
+              this.setState({loading: false}),3000)
             }
 
           }

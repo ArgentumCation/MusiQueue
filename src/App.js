@@ -48,7 +48,9 @@ class App extends Component {
   //Sign Out
   handleSignOut = () => {
     this.setState({errorMessage: null}); //clear any old errors
-    firebase.auth().signOut().then(this.setState({errorMessage: "Signed Out Successfully"})).catch((error) => this.setState({errorMessage: error.message}));
+    if (!firebase.auth.currentUser) {
+      firebase.auth().signOut().then(this.setState({errorMessage: "Signed Out Successfully"})).catch((error) => this.setState({errorMessage: error.message}));
+    }
 
   }
 
@@ -72,8 +74,7 @@ class App extends Component {
       } else {
         this.setState({user: null});
       }
-      setTimeout(
-      this.setState({loading: false}),10000);
+      setTimeout(this.setState({loading: false}), 10000);
     });
     this.setState({authUnRegFunc: unregFunc});
 
@@ -96,7 +97,10 @@ class App extends Component {
     }
     this.setState({queue: queue})
   }
-
+  clearQueue = (songs) => {
+    console.log("Clearing Queue")
+    this.setState({queue: songs})
+  }
   renderMain = (props) => {
     let newProps = props
     newProps.dequeue = this.dequeue;
@@ -104,6 +108,7 @@ class App extends Component {
     newProps.songQueue = this.state.queue;
     newProps.signedIn = !(this.state.user === undefined);
     newProps.user = this.state.user;
+    newProps.clearQueue = this.clearQueue;
     return (<Main {...newProps}/>)
   }
 
@@ -124,7 +129,7 @@ class App extends Component {
       </div>)
     } else {
       return (<div>
-        <Header signOutCallback={this.handleSignOut} signedIn={!(this.state.user === undefined)} displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
+        <Header signOutCallback={this.handleSignOut} signedIn={!(this.state.user == undefined)} displayMenu={this.state.displayMenu} menuCallback={this.toggleMenu}/> {this.state.errorMessage && <p className="alert">{this.state.errorMessage}</p>}
         <Switch>
           <Route exact="exact" path="/" render={this.renderMain}/>
           <Route exact="exact" path="/about" component={About}/>
@@ -161,6 +166,7 @@ class Header extends Component {
             </h1>
           </li>
           {menuOptions}
+
           <MenuItem onClick={this.props.signOutCallback} key={"login"} displayMenu={this.props.displayMenu} dest={"/login"} text={this.props.signedIn
               ? "Log Out"
               : "Log In"}/>
@@ -253,7 +259,7 @@ class Main extends Component {
 
     if (this.state.room !== undefined) {
 
-      //this.state.roomRef.child(this.state.roomID + "/queue").set(null);
+      this.state.roomRef.child(this.state.roomID + "/queue").set(null);
       this.state.roomRef.child(this.state.roomID + "/queue").set(this.props.songQueue);
 
     }
@@ -263,7 +269,7 @@ class Main extends Component {
 
     return (<main>
       <Dashboard roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
-      <Queue roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.dequeue} songQueue={this.props.songQueue}/>
+      <Queue clearQueue={this.props.clearQueue} roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.dequeue} songQueue={this.props.songQueue}/>
     </main>);
   }
 }
@@ -291,6 +297,17 @@ class Dashboard extends Component {
     //if there's a already a song in the queue play it
     setTimeout(() => {
       if (this.props.songQueue.length > 0) {
+        // while (true) {
+        //   let leave = false;
+        //   setTimeout(() => {
+        //     if (this.player.current.player.loadVideoById instanceof Function) {
+        //       let leave = true;
+        //     }
+        //   }, 500)
+        //   if(leave){
+        //     break;
+        //   }
+        // }
 
         this.player.current.player.loadVideoById(this.props.songQueue[0].id);
         this.showPlayer();
@@ -301,23 +318,24 @@ class Dashboard extends Component {
   addToQueue = (song) => {
 
     //If the user is in a room
-
-    if (this.props.room !== undefined) {
+    console.log("Clicked on search card to add")
+    if (this.props.roomRef !== undefined) {
       //Add the song to the queue
 
       this.props.roomRef.child(this.props.roomID + "/queue").push(song);
 
+    } else {
+      console.log("Error: No Room")
     }
 
-
-    console.log(this.player.current.player)
     if (this.props.songQueue.length === 0) {
-      console.log(this.player.current.player)
+
       this.player.current.player.loadVideoById(song.id);
+      this.showPlayer()
     }
     this.props.enqueue(song);
-
     this.showPlayer()
+
   }
 
   //creates a roomcode, then adds to firebase and joins it
@@ -558,12 +576,15 @@ class SearchCard extends Component {
 
 class Queue extends Component {
   removeFromQueue = (song) => {
+    console.log("Clicked on Queue Card to Delete");
     this.props.dequeue(song)
   }
   addToQueue = (song) => {
+    console.log("Queue Add to Queue")
     this.props.enqueue(song)
   }
   constructor(props) {
+    console.log("Queue Constructor")
     super(props)
     this.state = {
       loading: true
@@ -571,31 +592,38 @@ class Queue extends Component {
   }
   //On mount if we're in a room, add cloud songs to queue
   componentDidMount() {
+    console.log("Queue componentDidMount")
     setTimeout(() => {
 
       if (this.props.roomID !== undefined) {
         this.props.roomRef.child(this.props.roomID).on('value', (snapshot) => {
-          console.log("triggered")
+
           let queueObj = snapshot.val().queue
           if (queueObj !== undefined) {
             if (this.state.loading) {
+              console.log("loading")
               let cloudSongs = Object.values(snapshot.val().queue);
-
-              for (let song of cloudSongs) {
-                this.addToQueue(song)
-              }
-              setTimeout(
-              this.setState({loading: false}),3000)
+              this.props.clearQueue(cloudSongs);
+              console.log("queue after clearing:")
+              // console.log(this.props.songQueue);
+              // for (let song of cloudSongs) {
+              //   this.addToQueue(song)
+              //   console.log("Adding")
+              //   console.log(song)
+              //   console.log(this.props.songQueue)
+              //}
+              setTimeout(this.setState({loading: false}), 3000)
             }
 
           }
-          this.setState({loading:true})
+          this.setState({loading: true})
         })
       }
     }, 500)
   }
-  componentDidUpdate(prevProps) {}
+
   render() {
+    console.log("Queue Render")
     let queueCards = this.props.songQueue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el}/>);
     return (<div className="queue">
       <div className="queue-header">Queue</div>
@@ -681,27 +709,29 @@ class Login extends Component {
   }
   render() {
     return <main className="about">
-    <div className="login">
-      <form>
-        <table>
-          <tr>
-            <td>
-              <label htmlFor="email">Email</label>
-            </td>
-            <td><input id="email" type="email" name="email" onChange={this.handleChange}/></td>
-          </tr>
-          <tr>
-            <td>
-              <label htmlFor="password">Password</label>
-            </td>
-            <td><input id="password" type="password" name="password" onChange={this.handleChange}/></td>
-          </tr>
-        </table>
-        <div>
-          <button className="action-btn" onClick={this.handleSignUp}>Sign-up</button>
-          <button className="action-btn" onClick={this.handleSignIn}>Sign-in</button>
-        </div>
-      </form>
+      <div className="login">
+        <form>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <label htmlFor="email">Email</label>
+                </td>
+                <td><input id="email" type="email" name="email" onChange={this.handleChange}/></td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="password">Password</label>
+                </td>
+                <td><input id="password" type="password" name="password" onChange={this.handleChange}/></td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <button className="action-btn" onClick={this.handleSignUp}>Sign-up</button>
+            <button className="action-btn" onClick={this.handleSignIn}>Sign-in</button>
+          </div>
+        </form>
       </div>
     </main>
   }

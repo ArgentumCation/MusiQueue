@@ -98,7 +98,7 @@ class App extends Component {
     this.setState({queue: queue})
   }
   clearQueue = (songs) => {
-    console.log("Clearing Queue")
+    //console.log("Clearing Queue")
     this.setState({queue: songs})
   }
   renderMain = (props) => {
@@ -267,8 +267,8 @@ class Main extends Component {
 
   }
   render() {
-    console.log("reftest")
-    console.log(this.dashboard)
+    //console.log("reftest")
+    //console.log(this.dashboard)
     return    (<main>
       <Dashboard ref={this.dashboard} roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
       <Queue dash={this.dashboard.current} clearQueue={this.props.clearQueue} roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.dequeue} songQueue={this.props.songQueue}/>
@@ -318,7 +318,7 @@ class Dashboard extends Component {
   }
 
   getCurrentlyPlaying = () => {
-    console.log("currently playing")
+    //console.log("currently playing")
 try {
   return this.player.current.player.playerInfo.videoData.video_id
 }
@@ -341,14 +341,14 @@ catch{
   addToQueue = (song) => {
 
     //If the user is in a room
-    console.log("Clicked on search card to add")
+    //console.log("Clicked on search card to add")
     if (this.props.roomRef !== undefined) {
       //Add the song to the queue
 
       this.props.roomRef.child(this.props.roomID + "/queue").push(song);
 
     } else {
-      console.log("Error: No Room")
+      //console.log("Error: No Room")
     }
 
     if (this.props.songQueue.length === 0) {
@@ -599,15 +599,15 @@ class SearchCard extends Component {
 
 class Queue extends Component {
   removeFromQueue = (song) => {
-    console.log("Clicked on Queue Card to Delete");
+    //console.log("Clicked on Queue Card to Delete");
     this.props.dequeue(song)
   }
   addToQueue = (song) => {
-    console.log("Queue Add to Queue")
+    //console.log("Queue Add to Queue")
     this.props.enqueue(song)
   }
   constructor(props) {
-    console.log("Queue Constructor")
+    //console.log("Queue Constructor")
     super(props)
     this.state = {
       loading: true
@@ -615,7 +615,7 @@ class Queue extends Component {
   }
   //On mount if we're in a room, add cloud songs to queue
   componentDidMount() {
-    console.log("Queue componentDidMount")
+    //console.log("Queue componentDidMount")
     setTimeout(() => {
 
       if (this.props.roomID !== undefined) {
@@ -624,20 +624,20 @@ class Queue extends Component {
           let queueObj = snapshot.val().queue
           if (queueObj !== undefined) {
             if (this.state.loading) {
-              console.log("loading")
+              //console.log("loading")
               let cloudSongs = Object.values(snapshot.val().queue);
               this.props.clearQueue(cloudSongs);
-              console.log(this.props.dash.getCurrentlyPlaying())
-              console.log( cloudSongs[0].id)
+              //console.log(this.props.dash.getCurrentlyPlaying())
+              //console.log( cloudSongs[0].id)
               if(this.props.dash.getCurrentlyPlaying() !== cloudSongs[0].id){
                 this.props.dash.loadSong(cloudSongs[0].id);
               }
-              // console.log(this.props.songQueue);
+              // //console.log(this.props.songQueue);
               // for (let song of cloudSongs) {
               //   this.addToQueue(song)
-              //   console.log("Adding")
-              //   console.log(song)
-              //   console.log(this.props.songQueue)
+              //   //console.log("Adding")
+              //   //console.log(song)
+              //   //console.log(this.props.songQueue)
               //}
               setTimeout(this.setState({loading: false}), 1500)
             }
@@ -650,7 +650,7 @@ class Queue extends Component {
   }
 
   render() {
-    console.log("Queue Render")
+    //console.log("Queue Render")
     let queueCards = this.props.songQueue.map((el) => <QueueCard dequeueCallback={this.removeFromQueue} key={el.id} song={el}/>);
     return (<div className="queue">
       <div className="queue-header">Queue</div>

@@ -74,7 +74,7 @@ class App extends Component {
       } else {
         this.setState({user: null});
       }
-      setTimeout(this.setState({loading: false}), 10000);
+      setTimeout(() => this.setState({loading: false}), 2000);
     });
     this.setState({authUnRegFunc: unregFunc});
 
@@ -219,6 +219,11 @@ class Main extends Component {
     this.dashboard = React.createRef();
   }
 
+
+
+  refreshRoom = (code) =>{
+    window.location.reload(false);
+  }
   componentDidUpdate(prevProps) {
 
     if (this.state.room !== this.props.match.params.roomCode) {
@@ -250,7 +255,7 @@ class Main extends Component {
         });
 
       }
-    }, 50)
+    }, 0)
 
   }
 
@@ -270,7 +275,7 @@ class Main extends Component {
     //console.log("reftest")
     //console.log(this.dashboard)
     return    (<main>
-      <Dashboard ref={this.dashboard} roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
+      <Dashboard refreshRoom={this.refreshRoom} ref={this.dashboard} roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
       <Queue dash={this.dashboard.current} clearQueue={this.props.clearQueue} roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.dequeue} songQueue={this.props.songQueue}/>
     </main>);
   }
@@ -314,7 +319,7 @@ class Dashboard extends Component {
         this.player.current.player.loadVideoById(this.props.songQueue[0].id);
         this.showPlayer();
       }
-    }, 3000)
+    }, 4000)
   }
 
   getCurrentlyPlaying = () => {
@@ -347,8 +352,6 @@ catch{
 
       this.props.roomRef.child(this.props.roomID + "/queue").push(song);
 
-    } else {
-      //console.log("Error: No Room")
     }
 
     if (this.props.songQueue.length === 0) {
@@ -361,6 +364,7 @@ catch{
 
   }
 
+
   //creates a roomcode, then adds to firebase and joins it
   createRoom = () => {
     let code = Math.random().toString(36).substring(2, 6);
@@ -371,6 +375,9 @@ catch{
     }
     firebase.database().ref("rooms").push(obj).catch((error) => console.log(error));
     this.props.history.push("/" + code);
+
+    this.props.refreshRoom(code);
+
 
   }
   //Stores the value in the searchbox
@@ -637,7 +644,7 @@ class Queue extends Component {
           this.setState({loading: true})
         })
       }
-    }, 500)
+    }, 2000)
   }
 
   render() {
@@ -673,29 +680,33 @@ class About extends Component {
   render() {
     return <main className="about">
       <h1>About Our App</h1>
-      <section>
+
         <h3>App Description</h3>
-        <p>
-          The users of the application are guests in a space where Spotify music is played, in addition to hosts who play Spotify for their guests.
-        </p>
-        <p>
-          Users will use the application to queue music and vote on changes to the current queue. That is, users have the ability to see the entire music queue. They may search up music and add it to the queue. Any songs in queue deemed too unpopular may be voted on to be removed from queue, or simply removed by the host. Queuing can be rate limited.
-        </p>
-        <p>
-          This app will help solve the problem by abstracting and automating the process of queuing songs. This web app leverages the ubiquity of internet-connected devices to reduce the work on the host's part. Such abstraction has the added benefit of anonymizing the guests' preferences.
-        </p>
-      </section>
-      <section>
-        <h3>How to Use</h3>
-        <ol>
+
+        <h1>About Our App</h1>
+
+          <h3>App Description</h3>
+          <p>
+          The users of the application are guests in a space where Youtube music is played, in addition to hosts who play Youtube for their guests.
+          </p>
+
+          <p>
+Users will use the application to queue music and vote on changes to the current queue. That is, users have the ability to see the entire music queue. They may search up music and add it to the queue. Any songs in queue deemed too unpopular may be voted on to be removed from queue, or simply removed by the host. Queuing can be rate limited.
+          </p>
+          <p>
+            This app will help solve the problem by abstracting and automating the process of queuing songs. This web app leverages the ubiquity of internet-connected devices to reduce the work on the host's part. Such abstraction has the added benefit of anonymizing the guests' preferences.
+          </p>
+
+          <h3>How to Use</h3>
+          <ol>
+          <li>All users log into the website</li>
           <li>Host clicks on a button to create a party, revealing a code.</li>
           <li>Guests click on a button to join a party using a code.</li>
-          <li>Host begins playing music on Spotify like normal.</li>
-          <li>Guests search for music and tap on results to add song to queue.</li>
-          <li>Occasionally a pop-up may ask all users if they want to skip the current track or genre.
-          </li>
-        </ol>
-      </section>
+          <li>users can search for songs and click them to add them to the queue</li>
+          <li>users can click on queued songs to remove them</li>
+          <li>Anyone can add or remove songs from the queue</li>
+            </ol>
+
     </main>
   }
 }

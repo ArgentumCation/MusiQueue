@@ -216,6 +216,7 @@ class Main extends Component {
     this.state = {
       room: undefined
     };
+    this.dashboard = React.createRef();
   }
 
   componentDidUpdate(prevProps) {
@@ -266,10 +267,11 @@ class Main extends Component {
 
   }
   render() {
-
-    return (<main>
-      <Dashboard roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
-      <Queue clearQueue={this.props.clearQueue} roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.dequeue} songQueue={this.props.songQueue}/>
+    console.log("reftest")
+    console.log(this.dashboard)
+    return    (<main>
+      <Dashboard ref={this.dashboard} roomRef={this.state.roomRef} roomID={this.state.roomID} user={this.props.user} signedIn={this.props.signedIn} room={this.state.room} history={this.props.history} dequeue={this.dequeue} songQueue={this.props.songQueue} enqueue={this.props.enqueue}/>
+      <Queue dash={this.dashboard.current} clearQueue={this.props.clearQueue} roomRef={this.state.roomRef} roomID={this.state.roomID} enqueue={this.props.enqueue} dequeue={this.dequeue} songQueue={this.props.songQueue}/>
     </main>);
   }
 }
@@ -312,8 +314,29 @@ class Dashboard extends Component {
         this.player.current.player.loadVideoById(this.props.songQueue[0].id);
         this.showPlayer();
       }
-    }, 2500)
+    }, 3000)
   }
+
+  getCurrentlyPlaying = () => {
+    console.log("currently playing")
+try {
+  return this.player.current.player.playerInfo.videoData.video_id
+}
+catch{
+  return undefined
+}
+
+
+  }
+
+  loadSong = (id) => {
+    try {
+        this.player.current.player.loadVideoById(id);}
+        catch{
+
+        }
+      }
+
 
   addToQueue = (song) => {
 
@@ -604,7 +627,11 @@ class Queue extends Component {
               console.log("loading")
               let cloudSongs = Object.values(snapshot.val().queue);
               this.props.clearQueue(cloudSongs);
-              console.log("queue after clearing:")
+              console.log(this.props.dash.getCurrentlyPlaying())
+              console.log( cloudSongs[0].id)
+              if(this.props.dash.getCurrentlyPlaying() !== cloudSongs[0].id){
+                this.props.dash.loadSong(cloudSongs[0].id);
+              }
               // console.log(this.props.songQueue);
               // for (let song of cloudSongs) {
               //   this.addToQueue(song)
@@ -612,7 +639,7 @@ class Queue extends Component {
               //   console.log(song)
               //   console.log(this.props.songQueue)
               //}
-              setTimeout(this.setState({loading: false}), 3000)
+              setTimeout(this.setState({loading: false}), 1500)
             }
 
           }
